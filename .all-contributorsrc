@@ -1,0 +1,27 @@
+{
+  "projectName": "mizar",
+  "projectOwner": "Fabio286",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "Fabio286",
+      "name": "Fabio Di Stasio",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31471771?v=4",
+      "profile": "https://fabiodistasio.it/",
+      "contributions": [
+        "code",
+        "translation",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true
+}
