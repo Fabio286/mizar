@@ -2,10 +2,8 @@ import { defineStore } from 'pinia';
 import { ipcRenderer } from 'electron';
 import { i18n, AvailableLocale } from '@/i18n';
 import * as Store from 'electron-store';
-import { ShortcutRecord } from 'common/shortcuts';
 
 const settingsStore = new Store({ name: 'settings' });
-const shortcutsStore = new Store({ name: 'shortcuts' });
 const isDarkTheme = window.matchMedia('(prefers-color-scheme: dark)');
 const defaultAppTheme = isDarkTheme.matches ? 'dark' : 'light';
 const defaultEditorTheme = isDarkTheme.matches ? 'twilight' : 'sqlserver';
@@ -30,7 +28,6 @@ export const useSettingsStore = defineStore('settings', {
       restoreTabs: settingsStore.get('restore_tabs', true) as boolean,
       disableBlur: settingsStore.get('disable_blur', false) as boolean,
       disableScratchpad: settingsStore.get('disable_scratchpad', false) as boolean,
-      shortcuts: shortcutsStore.get('shortcuts', []) as ShortcutRecord[],
       defaultCopyType: settingsStore.get('default_copy_type', 'cell') as string
    }),
    actions: {
@@ -95,9 +92,6 @@ export const useSettingsStore = defineStore('settings', {
       changeDisableScratchpad (val: boolean) {
          this.disableScratchpad = val;
          settingsStore.set('disable_scratchpad', this.disableScratchpad);
-      },
-      updateShortcuts (shortcuts: ShortcutRecord[]) {
-         this.shortcuts = shortcuts;
       },
       changeDefaultCopyType (type: string) {
          this.defaultCopyType = type;

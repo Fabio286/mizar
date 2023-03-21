@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { uidGen } from 'common/libs/uidGen';
+import { uidGen } from '../libs/uidGen';
 
 export interface Notification {
    uid: string;

@@ -31,7 +31,7 @@ async function createMainWindow () {
       x: mainWindowState.x,
       y: mainWindowState.y,
       minWidth: 900,
-      minHeight: 550,
+      minHeight: 500,
       show: !isWindows,
       title: 'Mizar',
       icon: nativeImage.createFromDataURL(icon.default),
@@ -124,8 +124,8 @@ else {
       if (isWindows)
          mainWindow.show();
 
-      // if (isDevelopment)
-      //    mainWindow.webContents.openDevTools();
+      if (isDevelopment)
+         mainWindow.webContents.openDevTools();
 
       process.on('uncaughtException', error => {
          mainWindow.webContents.send('unhandled-exception', error);

@@ -2,10 +2,8 @@
   "include": [
     "./tests/**/*", 
     "./src/main/**/*", 
-    "./src/renderer/**/*", 
-    "./src/common/**/*", 
+    "./src/renderer/**/*"
   ],
-  "exclude": ["./src/renderer/libs/ext-language_tools.js"],
   "compilerOptions": {
     "baseUrl": "./",
     "target": "es2021",
@@ -21,7 +19,6 @@
     "resolveJsonModule": true,
     "removeComments": true,
     "paths": {
-      "common/*": ["./src/common/*"],
       "@/*": ["./src/renderer/*"],
     }
   }

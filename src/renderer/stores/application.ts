@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import * as Store from 'electron-store';
-import { Ace } from 'ace-builds';
 const persistentStore = new Store({ name: 'settings' });
 
 export const useApplicationStore = defineStore('application', {
@@ -15,11 +14,9 @@ export const useApplicationStore = defineStore('application', {
       selectedSettingTab: 'general',
       selectedConection: {},
       updateStatus: 'noupdate', // 'noupdate' | 'available' | 'checking' | 'nocheck' | 'downloading' | 'downloaded' | 'disabled'
-      downloadProgress: 0,
-      baseCompleter: [] as Ace.Completer[] // Needed to reset ace editor, due global-only ace completer
+      downloadProgress: 0
    }),
    getters: {
-      getBaseCompleter: state => state.baseCompleter,
       getSelectedConnection: state => state.selectedConection,
       getDownloadProgress: state => Number(state.downloadProgress.toFixed(1))
    },
@@ -33,9 +30,6 @@ export const useApplicationStore = defineStore('application', {
       },
       setLoadingStatus (payload: boolean) {
          this.isLoading = payload;
-      },
-      setBaseCompleters (payload: Ace.Completer[]) {
-         this.baseCompleter = payload;
       },
       // Modals
       showNewConnModal () {

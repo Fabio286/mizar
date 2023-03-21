@@ -1,30 +1,10 @@
 import { createI18n } from 'vue-i18n';
 import { enUS } from './en-US';
 import { itIT } from './it-IT';
-import { arSA } from './ar-SA';
-import { esES } from './es-ES';
-import { frFR } from './fr-FR';
-import { ptBR } from './pt-BR';
-import { deDE } from './de-DE';
-import { viVN } from './vi-VN';
-import { jaJP } from './ja-JP';
-import { zhCN } from './zh-CN';
-import { ruRU } from './ru-RU';
-import { idID } from './id-ID';
 
 const messages = {
    'en-US': enUS,
-   'it-IT': itIT,
-   'ar-SA': arSA,
-   'es-ES': esES,
-   'fr-FR': frFR,
-   'pt-BR': ptBR,
-   'de-DE': deDE,
-   'vi-VN': viVN,
-   'ja-JP': jaJP,
-   'zh-CN': zhCN,
-   'ru-RU': ruRU,
-   'id-ID': idID
+   'it-IT': itIT
 };
 
 type NestedPartial<T> = {
