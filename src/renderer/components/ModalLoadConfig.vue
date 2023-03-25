@@ -41,38 +41,33 @@
    </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ipcRenderer } from 'electron';
+import { ref } from 'vue';
 
-export default {
-   name: 'LoadConfig',
-   data () {
-      return {
-         configList: [],
-         selected: null
+const configList = ref([]);
+const selected = ref(null);
 
-      };
-   },
-   created () {
-      ipcRenderer.send('getClientConfigs');
-      ipcRenderer.on('configList', (event, configs) => {
-         this.configList = configs;
-      });
-   },
-   methods: {
-      close () {
-         this.$emit('hideLoadConfig');
-         this.selected = null;
-      },
-      deleteConfig: function (index) {
-         this.configList.splice(index, 1);
-         ipcRenderer.send('updateClientConfig', this.configList);
-      },
-      loadConfig (index) {
-         this.selected = index;
-         this.$emit('loadConfig', this.configList[index]);
-         this.close();
-      }
-   }
+const emit = defineEmits(['loadConfig', 'hideLoadConfig']);
+
+const close = () => {
+   emit('hideLoadConfig');
+   selected.value = null;
 };
+
+const deleteConfig = (index: number) => {
+   configList.value.splice(index, 1);
+   ipcRenderer.send('updateClientConfig', configList.value);
+};
+
+const loadConfig = (index: number) => {
+   selected.value = index;
+   emit('loadConfig', configList.value[index]);
+   close();
+};
+
+ipcRenderer.send('getClientConfigs');
+ipcRenderer.on('configList', (event, configs) => {
+   configList.value = configs;
+});
 </script>

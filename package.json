@@ -1,8 +1,8 @@
 {
   "name": "mizar",
-  "productName": "Mizar TCP Debugger",
+  "productName": "Mizar TCP Tester",
   "version": "1.0.0",
-  "description": "A TCP client/server debug tool",
+  "description": "A TCP client/server test/debug tool",
   "license": "MIT",
   "scripts": {
     "debug": "npm run rebuild:electron && npm run debug-runner",
@@ -111,14 +111,12 @@
   },
   "dependencies": {
     "@electron/remote": "~2.0.1",
-    "@mdi/font": "~7.1.96",
     "@vueuse/core": "~8.7.5",
     "electron-log": "~4.4.1",
     "electron-store": "~8.1.0",
     "electron-updater": "~4.6.5",
     "electron-window-state": "~5.0.3",
     "encoding": "~0.1.13",
-    "floating-vue": "~2.0.0-beta.20",
     "moment": "~2.29.4",
     "pinia": "~2.0.28",
     "source-map-support": "~0.5.20",

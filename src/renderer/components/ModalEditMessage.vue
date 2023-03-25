@@ -50,30 +50,27 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'EditMessage',
-   props: {
-      message: Object,
-      index: Number
-   },
-   data () {
-      return {
-         staticMsg: Object.assign({}, this.$props.message)
-      };
-   },
-   computed: {
-      validation () {
-         return this.staticMsg.message === '' || this.staticMsg.name === '' || this.staticMsg.format === '';
-      }
-   },
-   methods: {
-      close () {
-         this.$emit('hideEditMessage');
-      },
-      confirm () {
-         this.$emit('editMessage', this.staticMsg, this.index);
-      }
-   }
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const props = defineProps({
+   message: Object,
+   index: Number
+});
+
+const staticMsg = ref(Object.assign({}, props.message));
+
+const emit = defineEmits(['hideEditMessage', 'editMessage']);
+
+const validation = computed(() => {
+   return staticMsg.value.message === '' || staticMsg.value.name === '' || staticMsg.value.format === '';
+});
+
+const close = () => {
+   emit('hideEditMessage');
+};
+
+const confirm = () => {
+   emit('editMessage', staticMsg.value, props.index);
 };
 </script>

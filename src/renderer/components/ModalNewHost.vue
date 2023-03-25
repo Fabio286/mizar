@@ -39,35 +39,31 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'NewHost',
-   data () {
-      return {
-         host: {
-            host: '',
-            port: '',
-            enabled: true
-         }
-      };
-   },
-   computed: {
-      validation () {
-         return this.host.host === '' || this.host.port === '';
-      }
-   },
-   methods: {
-      close () {
-         this.$emit('hideAddHost');
-      },
-      confirm () {
-         this.$emit('createHost', this.host);
-         this.host = {
-            host: '',
-            port: '',
-            enabled: true
-         };
-      }
-   }
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const emit = defineEmits(['hideAddHost', 'createHost']);
+
+const host = ref({
+   host: '',
+   port: '',
+   enabled: true
+});
+
+const validation = computed(() => {
+   return host.value.host === '' || host.value.port === '';
+});
+
+const close = () => {
+   emit('hideAddHost');
+};
+
+const confirm = () => {
+   emit('createHost', host.value);
+   host.value = {
+      host: '',
+      port: '',
+      enabled: true
+   };
 };
 </script>

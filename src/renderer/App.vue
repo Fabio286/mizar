@@ -8,12 +8,12 @@
          @select-tab="selectTab"
       />
       <div id="main">
-         <Client
+         <ClientTab
             v-show="selTab === 0"
             ref="client"
             @client-status="clientUpdateStatus"
          />
-         <Server
+         <ServerTab
             v-show="selTab === 1"
             ref="server"
             @server-status="serverUpdateStatus"
@@ -24,12 +24,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import AppHeader from '@/components/app-header.vue';
-import Client from '@/components/client.vue';
-import Server from '@/components/server.vue';
+// import { useI18n } from 'vue-i18n';
+import AppHeader from '@/components/AppHeader.vue';
+import ClientTab from '@/components/ClientTab.vue';
+import ServerTab from '@/components/ServerTab.vue';
 
-const { t } = useI18n();
+// const { t } = useI18n();
 
 const selTab = ref(0);
 const clientStatus = ref(0);

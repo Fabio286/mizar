@@ -2,9 +2,7 @@
 import { ipcRenderer } from 'electron';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import * as FloatingVue from 'floating-vue';
-import '@mdi/font/css/materialdesignicons.css';
-import 'floating-vue/dist/style.css';
+import '@/css/reset.css';
 import '@/scss/main.scss';
 
 import { useApplicationStore } from '@/stores/application';
@@ -17,7 +15,6 @@ import { i18n } from '@/i18n';
 createApp(App)
    .use(createPinia())
    .use(i18n)
-   .use(FloatingVue)
    .mount('#app');
 
 const { locale } = useSettingsStore();

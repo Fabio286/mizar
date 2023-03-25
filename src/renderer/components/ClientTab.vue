@@ -204,7 +204,7 @@
             </div>
          </form>
          <transition name="fade">
-            <client-reports
+            <ClientTabReports
                v-if="reportList.length > 0"
                ref="reports"
                :reports="reportList"
@@ -218,243 +218,244 @@
    </div>
 </template>
 
-<script>
-import Console from './console.vue';
-import Hosts from './hosts.vue';
-import Messages from './messages.vue';
-import NewHost from './new-host.vue';
-import NewMessage from './new-message.vue';
-import EditMessage from './edit-message.vue';
-import SaveConfig from './save-config.vue';
-import LoadConfig from './load-config.vue';
-import ClientReports from './client-reports.vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import Console from './BaseConsole.vue';
+import Hosts from './ClientTabHosts.vue';
+import Messages from './ModalMessages.vue';
+import NewHost from './ModalNewHost.vue';
+import NewMessage from './ModalNewMessage.vue';
+import EditMessage from './ModalEditMessage.vue';
+import SaveConfig from './ModalSaveConfig.vue';
+import LoadConfig from './ModalLoadConfig.vue';
+import ClientTabReports from './ClientTabReports.vue';
 import { ipcRenderer } from 'electron';
 
-export default {
-   name: 'Client',
-   components: {
-      Console,
-      Hosts,
-      Messages,
-      NewHost,
-      NewMessage,
-      EditMessage,
-      SaveConfig,
-      LoadConfig,
-      ClientReports
-   },
-   data () {
-      return {
-         running: 0,
-         params: {
-            nMsgs: 1,
-            nClients: 1,
-            tMin: 0,
-            tMax: 0,
-            trace: false,
-            alertReset: false,
-            closeOnEcho: false,
-            persistentConnection: false,
-            stepTest: false,
-            loop: false
-         },
-         logs: [],
-         hostList: [],
-         messageList: [],
-         reportList: [],
-         popNewHost: false,
-         popNewMessage: false,
-         popEditMessage: false,
-         popSaveConfig: false,
-         popLoadConfig: false,
-         idEditedMsg: null
+const emit = defineEmits(['clientStatus']);
+
+const running = ref(0);
+const params = ref({
+   nMsgs: 1,
+   nClients: 1,
+   tMin: 0,
+   tMax: 0,
+   trace: false,
+   alertReset: false,
+   closeOnEcho: false,
+   persistentConnection: false,
+   stepTest: false,
+   loop: false
+});
+const logs = ref([]);
+const hostList = ref([]);
+const messageList = ref([]);
+const reportList = ref([]);
+const popNewHost = ref(false);
+const popNewMessage = ref(false);
+const popEditMessage = ref(false);
+const popSaveConfig = ref(false);
+const popLoadConfig = ref(false);
+const idEditedMsg = ref(null);
+
+const slicedLogs = computed(() => {
+   if (logs.value.length > 500)
+      logs.value = logs.value.slice(-500);
+
+   return logs.value;
+});
+
+const startTest = () => {
+   if (params.value.tMin < 100 && params.value.trace === true) {
+      params.value.trace = false;
+      const time = new Date().toLocaleString();
+      const log = {
+         time: time,
+         message: 'Trace disabilitato: Intervalli troppo brevi',
+         color: 'yellow'
       };
-   },
-   computed: {
-      slicedLogs () {
-         if (this.logs.length > 500)
-            this.logs = this.logs.slice(-500);
 
-         return this.logs;
-      }
-   },
-   created () {
-      ipcRenderer.on('clientLog', (event, data) => {
-         let time = new Date().toLocaleString();
-         let { message, color } = data;
-         let log = {
-            time: time,
-            message,
-            color
-         };
-
-         this.logs.push(log);
-      });
-
-      ipcRenderer.on('testFinish', (event, message) => {
-         this.running = 0;
-         this.$emit('clientStatus', this.running);
-         let time = new Date().toLocaleString();
-         let log = {
-            time: time,
-            message,
-            color: ''
-         };
-
-         this.logs.push(log);
-      });
-
-      ipcRenderer.send('getHosts');
-      ipcRenderer.on('hostList', (event, hosts) => {
-         this.hostList = hosts;
-      });
-
-      ipcRenderer.send('getMessages');
-      ipcRenderer.on('messageList', (event, messages) => {
-         this.messageList = messages;
-      });
-
-      ipcRenderer.on('reportClientList', (event, reports) => {
-         this.reportList = reports;
-      });
-   },
-   methods: {
-      startTest () {
-         if (this.params.tMin < 100 && this.params.trace === true) {
-            this.params.trace = false;
-            let time = new Date().toLocaleString();
-            let log = {
-               time: time,
-               message: 'Trace disabilitato: Intervalli troppo brevi',
-               color: 'yellow'
-            };
-
-            this.logs.push(log);
-         }
-
-         this.running = 1;
-         this.$emit('clientStatus', this.running);
-
-         if (this.params.stepTest) {
-            this.params.closeOnEcho = false;
-            this.params.persistentConnection = false;
-            this.params.loop = false;
-         }
-
-         let obj = {
-            params: this.params,
-            hosts: this.hostList.filter((host) => {
-               return host.enabled === true;
-            })
-         };
-         ipcRenderer.send('startTest', obj);
-      },
-      sendMessages () {
-         ipcRenderer.send('sendMessages');
-      },
-      stopTest () {
-         ipcRenderer.send('stopTest');
-      },
-
-      // Host
-      createHost (host) {
-         this.hostList.push(host);
-         this.popNewHost = false;
-         ipcRenderer.send('updateHosts', this.hostList);
-      },
-      showAddHost () {
-         this.popNewHost = true;
-      },
-      hideAddHost () {
-         this.popNewHost = false;
-      },
-      updateHosts () {
-         ipcRenderer.send('updateHosts', this.hostList);
-      },
-      deleteHost (hostId) {
-         this.hostList.splice(hostId, 1);
-         ipcRenderer.send('updateHosts', this.hostList);
-      },
-      toggleHostCheck (status) {
-         if (this.running !== 0) return;
-         let enable = status === 0;
-         this.hostList.forEach((host) => {
-            host.enabled = enable;
-         });
-         ipcRenderer.send('updateHosts', this.hostList);
-      },
-
-      // Messaggi
-      createMessage (message) {
-         this.messageList.push(message);
-         this.popNewMessage = false;
-         ipcRenderer.send('updateMessages', this.messageList);
-      },
-      editMessage (message, index) {
-         this.popEditMessage = false;
-         this.$set(this.messageList, index, message);
-         ipcRenderer.send('updateMessages', this.messageList);
-      },
-      updateMessages () {
-         ipcRenderer.send('updateMessages', this.messageList);
-      },
-      showAddMessage () {
-         this.popNewMessage = true;
-      },
-      hideAddMessage () {
-         this.popNewMessage = false;
-      },
-      showEditMessage (index) {
-         this.idEditedMsg = index;
-         this.popEditMessage = true;
-      },
-      hideEditMessage () {
-         this.popEditMessage = false;
-      },
-      deleteMessage (messageId) {
-         this.messageList.splice(messageId, 1);
-         ipcRenderer.send('updateMessages', this.messageList);
-      },
-      toggleMessageCheck (status) {
-         if (this.running !== 0) return;
-         let enable = status === 0;
-         this.messageList.forEach((message) => {
-            message.enabled = enable;
-         });
-         ipcRenderer.send('updateMessages', this.messageList);
-      },
-
-      // Convigurazioni
-      showSaveConfig () {
-         this.popSaveConfig = true;
-      },
-      hideSaveConfig () {
-         this.popSaveConfig = false;
-      },
-      saveConfig (config) {
-         this.popSaveConfig = false;
-         ipcRenderer.send('saveClientConfig', config);
-      },
-
-      showLoadConfig () {
-         this.popLoadConfig = true;
-      },
-      hideLoadConfig () {
-         this.popLoadConfig = false;
-      },
-      loadConfig (config) {
-         this.popLoadConfig = false;
-         this.params = config.params;
-
-         let time = new Date().toLocaleString();
-         let log = {
-            time: time,
-            message: `Configurazione "${config.name}" ripristinata`,
-            color: 'green'
-         };
-
-         this.logs.push(log);
-      }
+      logs.value.push(log);
    }
+
+   running.value = 1;
+   emit('clientStatus', running.value);
+
+   if (params.value.stepTest) {
+      params.value.closeOnEcho = false;
+      params.value.persistentConnection = false;
+      params.value.loop = false;
+   }
+
+   const obj = {
+      params: params.value,
+      hosts: hostList.value.filter((host) => {
+         return host.enabled === true;
+      })
+   };
+   ipcRenderer.send('startTest', obj);
 };
+
+const sendMessages = () => {
+   ipcRenderer.send('sendMessages');
+};
+
+const stopTest = () => {
+   ipcRenderer.send('stopTest');
+};
+
+// Host
+const createHost = (host: string) => {
+   hostList.value.push(host);
+   popNewHost.value = false;
+   ipcRenderer.send('updateHosts', hostList.value);
+};
+
+const showAddHost = () => {
+   popNewHost.value = true;
+};
+
+const hideAddHost = () => {
+   popNewHost.value = false;
+};
+
+const updateHosts = () => {
+   ipcRenderer.send('updateHosts', hostList.value);
+};
+
+const deleteHost = (hostId: number) => {
+   hostList.value.splice(hostId, 1);
+   ipcRenderer.send('updateHosts', hostList.value);
+};
+
+const toggleHostCheck = (status: number) => {
+   if (running.value !== 0) return;
+   const enable = status === 0;
+   hostList.value.forEach((host) => {
+      host.enabled = enable;
+   });
+   ipcRenderer.send('updateHosts', hostList.value);
+};
+
+// Messaggi
+const createMessage = (message: any) => {
+   messageList.value.push(message);
+   popNewMessage.value = false;
+   ipcRenderer.send('updateMessages', messageList.value);
+};
+
+const editMessage = (message: any, index: number) => {
+   popEditMessage.value = false;
+   messageList.value[index] = message;
+   ipcRenderer.send('updateMessages', messageList.value);
+};
+
+const updateMessages = () => {
+   ipcRenderer.send('updateMessages', messageList.value);
+};
+
+const showAddMessage = () => {
+   popNewMessage.value = true;
+};
+
+const hideAddMessage = () => {
+   popNewMessage.value = false;
+};
+
+const showEditMessage = (index: number) => {
+   idEditedMsg.value = index;
+   popEditMessage.value = true;
+};
+
+const hideEditMessage = () => {
+   popEditMessage.value = false;
+};
+
+const deleteMessage = (messageId: number) => {
+   messageList.value.splice(messageId, 1);
+   ipcRenderer.send('updateMessages', messageList.value);
+};
+
+const toggleMessageCheck = (status: number) => {
+   if (running.value !== 0) return;
+   const enable = status === 0;
+   messageList.value.forEach((message) => {
+      message.enabled = enable;
+   });
+   ipcRenderer.send('updateMessages', messageList.value);
+};
+
+// Convigurazioni
+const showSaveConfig = () => {
+   popSaveConfig.value = true;
+};
+
+const hideSaveConfig = () => {
+   popSaveConfig.value = false;
+};
+
+const saveConfig = (config: any) => {
+   popSaveConfig.value = false;
+   ipcRenderer.send('saveClientConfig', config);
+};
+
+const showLoadConfig = () => {
+   popLoadConfig.value = true;
+};
+
+const hideLoadConfig = () => {
+   popLoadConfig.value = false;
+};
+
+const loadConfig = (config: any) => {
+   popLoadConfig.value = false;
+   params.value = config.params;
+
+   const time = new Date().toLocaleString();
+   const log = {
+      time: time,
+      message: `Configurazione "${config.name}" ripristinata`,
+      color: 'green'
+   };
+
+   logs.value.push(log);
+};
+
+ipcRenderer.on('clientLog', (event, data) => {
+   const time = new Date().toLocaleString();
+   const { message, color } = data;
+   const log = {
+      time: time,
+      message,
+      color
+   };
+
+   logs.value.push(log);
+});
+
+ipcRenderer.on('testFinish', (event, message) => {
+   running.value = 0;
+   emit('clientStatus', running.value);
+   const time = new Date().toLocaleString();
+   const log = {
+      time: time,
+      message,
+      color: ''
+   };
+
+   logs.value.push(log);
+});
+
+ipcRenderer.send('getHosts');
+ipcRenderer.on('hostList', (event, hosts) => {
+   hostList.value = hosts;
+});
+
+ipcRenderer.send('getMessages');
+ipcRenderer.on('messageList', (event, messages) => {
+   messageList.value = messages;
+});
+
+ipcRenderer.on('reportClientList', (event, reports) => {
+   reportList.value = reports;
+});
 </script>

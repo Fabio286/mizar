@@ -42,27 +42,28 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'ServerReports',
-   props: {
-      reports: Array
-   },
-   computed: {
-      totSockets () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.sockets, 0);
-      },
-      totMessages () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.messages, 0);
-      },
-      totData () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.data, 0);
-      }
-   },
-   methods: {
-      reset () {
-         this.$emit('resetReports');
-      }
-   }
+<script setup lang="ts">
+import { computed, PropType } from 'vue';
+
+const emit = defineEmits(['resetReports']);
+
+const props = defineProps({
+   reports: Array as PropType<any[]>
+});
+
+const totSockets = computed(() => {
+   return props.reports.reduce((prev, cur: any) => prev + cur.sockets, 0);
+});
+
+const totMessages = computed(() => {
+   return props.reports.reduce((prev, cur: any) => prev + cur.messages, 0);
+});
+
+const totData = computed(() => {
+   return props.reports.reduce((prev, cur: any) => prev + cur.data, 0);
+});
+
+const reset = () => {
+   emit('resetReports');
 };
 </script>

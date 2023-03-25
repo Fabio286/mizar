@@ -29,34 +29,31 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'SaveCongif',
-   props: {
-      params: Object
-   },
-   data () {
-      return {
-         name: ''
-      };
-   },
-   computed: {
-      validation () {
-         return this.name === '';
-      }
-   },
-   methods: {
-      close () {
-         this.$emit('hideSaveConfig');
-      },
-      confirm () {
-         let config = {
-            name: this.name,
-            time: new Date().toLocaleString(),
-            params: this.$props.params
-         };
-         this.$emit('saveConfig', config);
-      }
-   }
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const emit = defineEmits(['hideSaveConfig', 'saveConfig']);
+
+const props = defineProps({
+   params: Object
+});
+
+const name = ref('');
+
+const validation = computed(() => {
+   return name.value === '';
+});
+
+const close = () => {
+   emit('hideSaveConfig');
+};
+
+const confirm = () => {
+   const config = {
+      name: name.value,
+      time: new Date().toLocaleString(),
+      params: props.params
+   };
+   emit('saveConfig', config);
 };
 </script>

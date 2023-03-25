@@ -33,44 +33,41 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'NewPort',
-   data () {
-      return {
-         port: {
-            port: '',
-            enabled: true
-         },
-         errMsg: ''
+<script setup lang="ts">
+import { ref, computed, getCurrentInstance } from 'vue';
+
+const emit = defineEmits(['hideAddPort', 'createPort']);
+
+const port = ref({
+   port: null,
+   enabled: true
+});
+const errMsg = ref('');
+
+const validation = computed(() => {
+   return port.value.port === null || port.value.port > 65535 || port.value.port < 1;
+});
+
+const close = () => {
+   emit('hideAddPort');
+   port.value = {
+      port: '',
+      enabled: true
+   };
+   errMsg.value = '';
+};
+
+const confirm = () => {
+   const instance = getCurrentInstance();// TODO: use props
+   const portList = (instance.parent as any).portList;
+   if (portList.findIndex((p: any) => p.port === port.value.port) < 0) {
+      emit('createPort', port.value);
+      port.value = {
+         port: '',
+         enabled: true
       };
-   },
-   computed: {
-      validation () {
-         return this.port.port === '' || this.port.port > 65535 || this.port.port < 1;
-      }
-   },
-   methods: {
-      close () {
-         this.$emit('hideAddPort');
-         this.port = {
-            port: '',
-            enabled: true
-         };
-         this.errMsg = '';
-      },
-      confirm () {
-         let portList = this.$parent.portList;
-         if (portList.findIndex((port) => port.port === this.port.port) < 0) {
-            this.$emit('createPort', this.port);
-            this.port = {
-               port: '',
-               enabled: true
-            };
-            this.errMsg = '';
-         }
-         else this.errMsg = 'Porta già esistente!';
-      }
+      errMsg.value = '';
    }
+   else errMsg.value = 'Porta già esistente!';
 };
 </script>

@@ -50,37 +50,33 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'NewMessage',
-   data () {
-      return {
-         message: {
-            message: '',
-            name: '',
-            enabled: true,
-            format: ''
-         }
-      };
-   },
-   computed: {
-      validation () {
-         return this.message.message === '' || this.message.name === '' || this.message.format === '';
-      }
-   },
-   methods: {
-      close () {
-         this.$emit('hideAddMessage');
-      },
-      confirm () {
-         this.$emit('createMessage', this.message);
-         this.message = {
-            message: '',
-            name: '',
-            format: '',
-            enabled: true
-         };
-      }
-   }
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+
+const emit = defineEmits(['hideAddMessage', 'createMessage']);
+
+const message = ref({
+   message: '',
+   name: '',
+   enabled: true,
+   format: ''
+});
+
+const validation = computed(() => {
+   return message.value.message === '' || message.value.name === '' || message.value.format === '';
+});
+
+const close = () => {
+   emit('hideAddMessage');
+};
+
+const confirm = () => {
+   emit('createMessage', message.value);
+   message.value = {
+      message: '',
+      name: '',
+      format: '',
+      enabled: true
+   };
 };
 </script>

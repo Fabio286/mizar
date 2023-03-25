@@ -1,0 +1,841 @@
+/* stylelint-disable block-no-empty */
+/* stylelint-disable selector-class-pattern */
+/* stylelint-disable selector-id-pattern */
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../assets/fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
+  src:
+    local("Material Icons"),
+    local("MaterialIcons-Regular"),
+    url("../assets/fonts/MaterialIcons-Regular.woff2") format("woff2"),
+    url("../assets/fonts/MaterialIcons-Regular.woff") format("woff"),
+    url("../assets/fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Regular";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../assets/fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../assets/fonts/RobotoMono-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  display: inline-flex;
+  vertical-align: middle;
+  text-decoration: inherit;
+  margin-right: 2px;
+  text-align: center;
+  line-height: 1;
+  text-transform: initial;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizelegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
+/* Generale */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: "Roboto Regular", Helvetica, sans-serif;
+  font-size: 100%;
+  color: #222;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  background: #eaeaea;
+  color: #222;
+  -webkit-touch-callout: none; /* iOS Safari */
+  user-select: none;
+}
+
+a,
+a:link,
+a:visited {
+  color: #006799;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #000;
+}
+
+p {
+  font-size: 1em;
+  margin-bottom: 1em;
+}
+
+li {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+input,
+textarea,
+select {
+  font-size: 14px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  border: 1px solid #b7b7b7;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin: 1px;
+  padding: 10px;
+  display: block;
+  background: transparent;
+  color: #777;
+  max-width: 100%;
+  width: 100%;
+  outline: none;
+  letter-spacing: 0;
+}
+
+select {
+  padding: 6px 3px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+}
+
+input[type="text"]:disabled,
+input[type="number"]:disabled,
+input[type="submit"]:disabled {
+  opacity: 0.5;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #0153b0;
+  border-width: 2px;
+  color: #777;
+  margin: 0;
+}
+
+label {
+  margin: 5px 0;
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #0153b0;
+  background: #eaeaea;
+}
+
+/* HEADER */
+
+/* MAIN */
+
+#wrapper {
+  height: 100%;
+}
+
+#header {
+  padding: 10px 15px 0;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+  background: #383e42;
+  color: #fcfcfc;
+  margin-bottom: 10px;
+}
+
+#header .material-icons {
+  font-size: 24px;
+  margin-top: -2px;
+}
+
+#appTitle {
+  font-size: 18px;
+}
+
+#appTabs {
+  display: flex;
+
+  /* margin-top: 15px; */
+}
+
+#appTabs .navTab {
+  padding: 10px 30px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+#appTabs .navTab.selected {
+  border-bottom: 2px solid #fff;
+  opacity: 1;
+}
+
+#appTabs .navTab .running {
+  position: absolute;
+  right: 5px;
+  top: 7px;
+  color: #33ce33;
+  font-size: 22px;
+}
+
+#main {
+  padding: 5px;
+  position: relative;
+}
+
+#client {
+  max-width: 400px;
+  min-width: 400px;
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 10px;
+}
+
+#server {
+  max-width: 400px;
+  min-width: 400px;
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 10px;
+}
+
+.input-element {
+  padding: 15px 10px;
+  position: relative;
+}
+
+.input-element label {
+  position: absolute;
+  top: 5px;
+  left: 20px;
+  padding: 0 5px;
+  z-index: 1;
+}
+
+.input-msg {
+  font-size: 12px;
+  color: #ff2f2f;
+}
+
+.box-50 {
+  width: 50%;
+  margin: 5px;
+}
+
+.box-100 {
+  width: 100%;
+}
+
+.console {
+  background: #2f323a;
+  border-radius: 5px;
+  color: #fcfcfc;
+  padding: 15px;
+  font-size: 12px;
+  line-height: 1.3;
+  font-family: monospace;
+  margin-right: 10px;
+  height: calc(100vh - 90px);
+  overflow: auto;
+  width: 100%;
+  user-select: text;
+}
+
+.console ::selection {
+  background-color: #33ce33;
+  color: #fcfcfc;
+}
+
+#hostBox,
+#portBox,
+#messageBox {
+  padding: 5px 5px 15px 10px;
+  position: relative;
+}
+
+#hostBox h3,
+#portBox h3,
+#messageBox h3 {
+  margin: 5px 0;
+  display: flex;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #0153b0;
+  position: absolute;
+  align-items: center;
+  top: -9px;
+  left: 19px;
+  padding: 0 5px;
+  z-index: 1;
+  text-shadow: -1px 0 #eaeaea, 0 1px #eaeaea, 1px 0 #eaeaea, 0 -1px #eaeaea;
+}
+
+#hostBox h3 span,
+#portBox h3 span,
+#messageBox h3 span {
+  z-index: 1;
+}
+
+#hostBox h3::after,
+#portBox h3::after,
+#messageBox h3::after {
+  content: "";
+  height: 1px;
+  width: 100%;
+  background: #eaeaea;
+  display: block;
+  position: absolute;
+  z-index: 0;
+  left: 0;
+}
+
+.tools-box {
+  position: absolute;
+  top: -8px;
+  right: 15px;
+  display: flex;
+}
+
+#hostBox .round-button,
+#portBox .round-button,
+#messageBox .round-button {
+  position: relative;
+  border-radius: 50px;
+  color: #fff;
+  padding: 5px;
+  height: 26px;
+  max-width: 26px;
+  overflow: hidden;
+  cursor: pointer;
+  align-items: center;
+  transition: max-width 0.3s;
+  z-index: 2;
+  margin-left: 10px;
+}
+
+#hostBox .round-button span,
+#portBox .round-button span,
+#messageBox .round-button span {
+  white-space: nowrap;
+  opacity: 0;
+  margin-right: 20px;
+  font-size: 14px;
+  padding: 1px 0 0 5px;
+  transition: opacity 0.2s;
+}
+
+#hostBox .round-button .material-icons,
+#portBox .round-button .material-icons,
+#messageBox .round-button .material-icons {
+  font-size: 16px;
+  height: 16px;
+  margin: 0;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+#hostBox .round-button:hover,
+#portBox .round-button:hover,
+#messageBox .round-button:hover {
+  max-width: 180px;
+}
+
+#hostBox .round-button:hover span,
+#portBox .round-button:hover span,
+#messageBox .round-button:hover span {
+  opacity: 1;
+}
+
+#messageBox .format {
+  font-family: "Roboto Mono";
+  font-size: 10px;
+}
+
+#hostList,
+#portList,
+#messageList {
+  max-height: 120px;
+  border: 1px solid #b7b7b7;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  overflow: auto;
+}
+
+#portList {
+  max-height: 300px;
+}
+
+#configList {
+  padding: 0 5px;
+  max-height: 40vh;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+#configList li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#configList li .radio-btn {
+  font-size: 24px;
+  cursor: pointer;
+  color: #1565c0;
+}
+
+#hostList li,
+#portList li,
+#configList li,
+#messageList li {
+  position: relative;
+  padding-right: 25px;
+}
+
+#hostList li .deleteHost,
+#portList li .deletePort,
+#configList li .deleteConfig,
+#messageList li .deleteMessage {
+  position: absolute;
+  top: -2px;
+  right: 0;
+  cursor: pointer;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  background: #e22424;
+  border-radius: 50px;
+  color: #eaeaea;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#hostList li .editHost,
+#portList li .editPort,
+#configList li .editConfig,
+#messageList li .editMessage {
+  position: absolute;
+  top: -2px;
+  right: 24px;
+  cursor: pointer;
+  font-size: 16px;
+  height: 18px;
+  width: 18px;
+  background: #1565c0;
+  border-radius: 50px;
+  color: #eaeaea;
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#configList li .deleteConfig {
+  top: 3px;
+  margin: 0;
+}
+
+fieldset:not(:disabled) #hostList li:hover .deleteHost,
+fieldset:not(:disabled) #portList li:hover .deletePort,
+#configList li:hover .deleteConfig,
+fieldset:not(:disabled) #messageList li:hover .deleteMessage,
+fieldset:not(:disabled) #hostList li:hover .editHost,
+fieldset:not(:disabled) #portList li:hover .editPort,
+#configList li:hover .editConfig,
+fieldset:not(:disabled) #messageList li:hover .editMessage {
+  opacity: 1;
+}
+
+#hostList li .checkbox,
+#portList li .checkbox,
+#messageList li .checkbox {
+  font-size: 13px;
+  color: #777;
+  margin-left: 5px;
+  width: fit-content;
+}
+
+#serverReports {
+  padding: 5px 5px 15px 10px;
+}
+
+#serverReports h3 {
+  margin: 15px 0 20px;
+}
+
+#serverReports table {
+  width: 100%;
+}
+
+#serverReports th {
+  padding: 5px;
+  vertical-align: middle;
+  border-bottom: 2px solid #b7b7b7;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+}
+
+#serverReports td {
+  border-bottom: 1px solid #b7b7b7;
+  padding: 5px 5px 4px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+#serverReports tfoot {
+  background: #d0d0d0;
+  font-weight: 700;
+}
+
+.help {
+  cursor: help;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.green {
+  color: #33ce33;
+}
+
+.green-bg {
+  background: #2aa72a;
+}
+
+.blue-bg {
+  background: #0153b0;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.red {
+  color: #ff2f2f;
+}
+
+#popcontainer {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background: rgb(0 0 0 / 30%);
+  z-index: 11;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+}
+
+.popup {
+  padding: 15px;
+  border-radius: 3px;
+  background: #eaeaea;
+  color: #000;
+  box-shadow: 0 0 10px -2px #000;
+  max-width: 70vw;
+  max-height: 90vh;
+}
+
+.popup h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.popup p {
+  line-height: 1.4;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.buttons button {
+  transition: filter 0.2s;
+  letter-spacing: 1px;
+}
+
+.buttons button:hover {
+  filter: brightness(110%);
+}
+
+.buttons button:active {
+  filter: brightness(85%);
+}
+
+.button-wrap {
+  position: relative;
+  margin: 20px 5px;
+}
+
+.button-wrap .material-icons {
+  position: absolute;
+  top: 11px;
+  left: 8px;
+  font-size: 16px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+button.cancel {
+  background: transparent;
+  display: inline-block;
+  padding: 10px 14px 9px;
+  color: #0153b0 !important;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: none;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  cursor: pointer;
+  outline: none;
+}
+
+button.save {
+  display: inline-block;
+  padding: 10px 14px 9px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: 1px solid #b7b7b7;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  cursor: pointer;
+  outline: none;
+  width: max-content;
+}
+
+button.confirm,
+input[type="submit"] {
+  background: #0153b0;
+  display: inline-block;
+  padding: 10px 14px 9px;
+  color: #fff !important;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: none;
+  border-bottom: 1px solid #0153b0;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  cursor: pointer;
+  outline: none;
+  width: max-content;
+}
+
+button:disabled.confirm,
+input[type="submit"]:disabled {
+  background: #777;
+  border-bottom: 1px solid #777;
+  cursor: not-allowed;
+}
+
+button.stop,
+input[type="submit"] {
+  background: #e22424;
+  display: inline-block;
+  padding: 10px 14px 9px;
+  color: #fff !important;
+  text-transform: uppercase;
+  border-radius: 5px;
+  border: none;
+  border-bottom: 1px solid #e22424;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  cursor: pointer;
+  outline: none;
+  width: max-content;
+}
+
+.button-wrap .material-icons.white {
+  color: #fff;
+}
+
+.button-wrap button {
+  padding-left: 30px;
+}
+
+#error404 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* SIDEBAR */
+
+/* FOOTER */
+
+/* VARI */
+.txtright {
+  text-align: right;
+}
+
+.txtleft {
+  text-align: left;
+}
+
+.txtcenter {
+  text-align: center;
+}
+
+.alignright {
+  float: right;
+  margin: 0.5em;
+  margin-right: 0;
+}
+
+.alignleft {
+  float: left;
+  margin: 0.5em;
+  margin-left: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+  margin: 7px 10px;
+  transition: opacity 0.2s;
+}
+
+fieldset:disabled .checkbox {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.toggle-select {
+  position: relative;
+}
+
+.toggle-select .material-icons {
+  font-size: 18px;
+  color: #1565c0;
+  z-index: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.toggle-select::after {
+  content: "";
+  height: 10px;
+  width: 10px;
+  background: #eaeaea;
+  display: block;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border-radius: 1px;
+  z-index: 0;
+}
+
+.checkbox-block {
+  display: flex;
+  height: 14px;
+  width: 14px;
+  min-width: 14px;
+  background: #ebebeb;
+  margin-right: 5px;
+  border: 2px solid #1565c0;
+  border-radius: 2px;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox input:checked + .checkbox-block {
+  background: #1565c0;
+}
+
+.checkbox input:checked + .checkbox-block::before {
+  content: "done";
+  display: block;
+  font-family: "Material Icons";
+  color: #fcfcfc;
+  font-size: 14px;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizelegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
+/* TABLET PORTRAIT */
+
+@media only screen and (min-width: 768px) {
+  /* 768px-HEADER */
+
+  /* 768px-MAIN */
+
+  /* 768px-FOOTER */
+}
+
+/* TABLET LANDSCAPE & NETBOOK */
+@media only screen and (min-width: 1024px) {
+  /* 1024px-HEADER */
+
+  /* 1024px-MAIN */
+
+  /* SIDEBAR */
+
+  /* 1024px-FOOTER */
+}
+
+/* DESKTOP */
+@media only screen and (min-width: 1200px) {
+}

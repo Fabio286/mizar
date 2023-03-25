@@ -1,8 +1,5 @@
 <template>
    <header id="header">
-      <!-- <div id="appTitle">
-         <h2>Mizar TCP Tester</h2>
-      </div> -->
       <nav id="appTabs">
          <div
             class="navTab"
@@ -36,18 +33,16 @@
    </header>
 </template>
 
-<script>
-export default {
-   name: 'AppHeader',
-   props: {
-      selTab: Number,
-      clientStatus: Number,
-      serverStatus: Number
-   },
-   methods: {
-      selectTab (value) {
-         this.$emit('selectTab', value);
-      }
-   }
+<script setup lang="ts">
+defineProps({
+   selTab: Number,
+   clientStatus: Number,
+   serverStatus: Number
+});
+
+const emit = defineEmits(['selectTab']);
+
+const selectTab = (value: number) => {
+   emit('selectTab', value);
 };
 </script>

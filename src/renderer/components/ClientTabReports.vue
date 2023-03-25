@@ -30,25 +30,26 @@
    </div>
 </template>
 
-<script>
-export default {
-   name: 'ClientReports',
-   props: {
-      reports: Array
-   },
-   computed: {
-      totSockets () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.sockets, 0);
-      },
-      totMessages () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.messages, 0);
-      },
-      totReceived () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.received, 0);
-      },
-      totData () {
-         return this.$props.reports.reduce((prev, cur) => prev + cur.data, 0);
-      }
-   }
-};
+<script setup lang="ts">
+import { PropType, computed } from 'vue';
+
+const props = defineProps({
+   reports: Array as PropType<any[]>
+});
+
+const totSockets = computed(() => {
+   return props.reports.reduce((prev, cur) => prev + cur.sockets, 0);
+});
+
+const totMessages = computed(() => {
+   return props.reports.reduce((prev, cur) => prev + cur.messages, 0);
+});
+
+const totReceived = computed(() => {
+   return props.reports.reduce((prev, cur) => prev + cur.received, 0);
+});
+
+const totData = computed(() => {
+   return props.reports.reduce((prev, cur) => prev + cur.data, 0);
+});
 </script>

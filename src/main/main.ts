@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeImage, ipcMain, Menu } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Store from 'electron-store';
@@ -10,10 +10,10 @@ import * as remoteMain from '@electron/remote/main';
 
 Store.initRenderer();
 const settingsStore = new Store({ name: 'settings' });
-const appTheme = settingsStore.get('application_theme');
+// const appTheme = settingsStore.get('application_theme');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isMacOS = process.platform === 'darwin';
-const isLinux = process.platform === 'linux';
+// const isLinux = process.platform === 'linux';
 const isWindows = process.platform === 'win32';
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -33,7 +33,7 @@ async function createMainWindow () {
       minWidth: 900,
       minHeight: 500,
       show: !isWindows,
-      title: 'Mizar',
+      title: 'Mizar TCP Tester',
       icon: nativeImage.createFromDataURL(icon.default),
       webPreferences: {
          nodeIntegration: true,
@@ -42,19 +42,20 @@ async function createMainWindow () {
          spellcheck: false
       },
       autoHideMenuBar: true,
-      titleBarStyle: isLinux ? 'default' :'hidden',
-      titleBarOverlay: isWindows
-         ? {
-            color: appTheme === 'dark' ? '#3f3f3f' : '#fff',
-            symbolColor: appTheme === 'dark' ? '#fff' : '#000',
-            height: 30
-         }
-         : false,
+      // titleBarStyle: isLinux ? 'default' :'hidden',
+      // titleBarOverlay: isWindows
+      //    ? {
+      //       color: appTheme === 'dark' ? '#383e42' : '#fff',
+      //       symbolColor: appTheme === 'dark' ? '#fff' : '#000',
+      //       height: 30
+      //    }
+      //    : false,
       trafficLightPosition: isMacOS ? { x: 10, y: 8 } : undefined,
       backgroundColor: '#1d1d1d'
    });
 
    mainWindowState.manage(window);
+   Menu.setApplicationMenu(null);
    window.on('moved', saveWindowState);
 
    remoteMain.enable(window.webContents);
@@ -199,7 +200,7 @@ ipcMain.on('resetReports', () => {
 
 ipcMain.on('getPorts', (event) => {
    try {
-      let ports = fs.readFileSync(`${storagePath}/storage/serverPorts.json`);
+      let ports = '';// fs.readFileSync(`${storagePath}/storage/serverPorts.json`);
       ports = JSON.parse(ports);
       event.sender.send('portList', ports);
    }
@@ -213,16 +214,16 @@ ipcMain.on('getPorts', (event) => {
 });
 
 ipcMain.on('updatePorts', (event, messageList) => {
-   try {
-      fs.writeFileSync(`${storagePath}/storage/serverPorts.json`, JSON.stringify(messageList, null, '   '));
-   }
-   catch (error) {
-      const data = {
-         message: error.stack,
-         color: 'red'
-      };
-      event.sender.send('serverLog', data);
-   }
+   // try {
+   //    fs.writeFileSync(`${storagePath}/storage/serverPorts.json`, JSON.stringify(messageList, null, '   '));
+   // }
+   // catch (error) {
+   //    const data = {
+   //       message: error.stack,
+   //       color: 'red'
+   //    };
+   //    event.sender.send('serverLog', data);
+   // }
 });
 
 function saveWindowState () {
