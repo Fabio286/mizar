@@ -4,6 +4,7 @@
          <transition name="fade">
             <NewPort
                v-show="popNewPort"
+               :port-list="localPorts"
                @hideAddPort="hideAddPort"
                @createPort="createPort"
             />
@@ -12,7 +13,7 @@
             <fieldset :disabled="running !== 0">
                <Ports
                   ref="ports"
-                  :port-list="portList"
+                  :port-list="localPorts"
                   @updatePorts="updatePorts"
                   @showAddPort="showAddPort"
                   @deletePort="deletePort"
@@ -82,13 +83,19 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Ports from './ServerTabPorts.vue';
 import NewPort from './ModalNewPort.vue';
 import SerterTabReports from './SerterTabReports.vue';
 import { ipcRenderer } from 'electron';
+import { ServerPort, useServerStore } from '@/stores/server';
 
 const emit = defineEmits(['serverStatus']);
+const serverStore = useServerStore();
+
+const { ports } = storeToRefs(serverStore);
+const { updatePorts: updateStorePorts } = serverStore;
 
 const running = ref(0);
 const params = ref({
@@ -97,9 +104,9 @@ const params = ref({
    alertReset: false
 });
 const logs = ref([]);
-const portList = ref([]);
 const reportList = ref([]);
 const popNewPort = ref(false);
+const localPorts = ref(ports.value);
 
 const slicedLogs = computed(() => {
    if (logs.value.length > 500)
@@ -118,7 +125,7 @@ const startServer = (e: MouseEvent) => {
    emit('serverStatus', running.value);
    const obj = {
       params: params.value,
-      ports: portList.value.filter((port) => {
+      ports: localPorts.value.filter((port) => {
          return port.enabled === true;
       })
    };
@@ -131,7 +138,7 @@ const stopServer = (e: MouseEvent) => {
 };
 
 const updatePorts = () => {
-   ipcRenderer.send('updatePorts', portList.value);
+   updateStorePorts(localPorts.value);
 };
 
 const showAddPort = () => {
@@ -142,15 +149,15 @@ const hideAddPort = () => {
    popNewPort.value = false;
 };
 
-const createPort = (port: number) => {
-   portList.value.push(port);
+const createPort = (port: ServerPort) => {
+   localPorts.value.push(port);
    popNewPort.value = false;
-   ipcRenderer.send('updatePorts', portList.value);
+   updateStorePorts(localPorts.value);
 };
 
 const deletePort = (portId: number) => {
-   portList.value.splice(portId, 1);
-   ipcRenderer.send('updatePorts', portList.value);
+   localPorts.value.splice(portId, 1);
+   updateStorePorts(localPorts.value);
 };
 
 const resetReports = () => {
@@ -160,11 +167,11 @@ const resetReports = () => {
 const togglePortCheck = (status: number) => {
    if (running.value !== 0) return;
    const enable = status === 0;
-   portList.value.forEach((host) => {
+   localPorts.value.forEach((host) => {
       host.enabled = enable;
    });
 
-   ipcRenderer.send('updatePorts', portList.value);
+   updateStorePorts(localPorts.value);
 };
 
 ipcRenderer.on('serverLog', (event, data) => {
@@ -191,11 +198,6 @@ ipcRenderer.on('serverFinish', (event, message) => {
    };
 
    logs.value.push(log);
-});
-
-ipcRenderer.send('getPorts');
-ipcRenderer.on('portList', (event, ports) => {
-   portList.value = ports;
 });
 
 ipcRenderer.on('reportServerList', (event, reports) => {

@@ -36,18 +36,19 @@
 </template>
 
 <script setup lang="ts">
+import { ClientHost } from '@/stores/client';
 import { ref, computed, onUpdated, PropType } from 'vue';
 
 const root = ref(null);
 
 const props = defineProps({
-   hostList: Array as PropType<any[]>
+   hostList: Array as PropType<ClientHost[]>
 });
 
 const emit = defineEmits(['updateHosts', 'showAddHost', 'deleteHost', 'toggleHostCheck']);
 
 const checkStatus = computed(() => {
-   const checked = props.hostList.filter((host: any) => {
+   const checked = props.hostList.filter((host) => {
       return host.enabled;
    });
    if (props.hostList.length === checked.length)
@@ -60,7 +61,7 @@ const checkStatus = computed(() => {
 
 const sortedHosts = computed(() => {
    const localHostList = props.hostList;
-   return localHostList.sort((a: any, b: any) => (a.host < b.host ? -1 : (a.host > b.host ? 1 : 0)) || a.port - b.port);
+   return localHostList.sort((a, b) => (a.host < b.host ? -1 : (a.host > b.host ? 1 : 0)) || a.port - b.port);
 });
 
 const updateHosts = () => {
@@ -71,7 +72,7 @@ const showAdd = () => {
    emit('showAddHost');
 };
 
-const deleteHost = (value: any) => {
+const deleteHost = (value: number) => {
    emit('deleteHost', value);
 };
 
@@ -86,7 +87,7 @@ const checkIcon = (status: number) => {
    }
 };
 
-const toggleCheck = (status: any) => {
+const toggleCheck = (status: number) => {
    emit('toggleHostCheck', status);
 };
 

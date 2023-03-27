@@ -33,12 +33,13 @@
 </template>
 
 <script setup lang="ts">
+import { ServerPort } from '@/stores/server';
 import { ref, computed, onUpdated, PropType } from 'vue';
 
 const emit = defineEmits(['updatePorts', 'showAddPort', 'deletePort', 'togglePortCheck']);
 
 const props = defineProps({
-   portList: Array as PropType<any[]>
+   portList: Array as PropType<ServerPort[]>
 });
 
 const root = ref(null);

@@ -7,7 +7,6 @@ import '@/scss/main.scss';
 
 import { useApplicationStore } from '@/stores/application';
 import { useSettingsStore } from '@/stores/settings';
-import { useNotificationsStore } from '@/stores/notifications';
 
 import App from '@/App.vue';
 import { i18n } from '@/i18n';
@@ -21,9 +20,9 @@ const { locale } = useSettingsStore();
 i18n.global.locale = locale;
 
 // IPC exceptions
-ipcRenderer.on('unhandled-exception', (event, error) => {
-   useNotificationsStore().addNotification({ status: 'error', message: error.message });
-});
+// ipcRenderer.on('unhandled-exception', (event, error) => {
+//    // useNotificationsStore().addNotification({ status: 'error', message: error.message }); TODO: send to console
+// });
 
 // IPC app updates
 ipcRenderer.on('checking-for-update', () => {

@@ -146,6 +146,58 @@ else {
    });
 }
 
+// Client
+let clientProcess: ChildProcess;
+ipcMain.on('startTest', (event, { params, hosts }) => {
+   event.sender.send('clientLog', { message: 'Test avviato', color: '' });
+   // clientProcess = fork(`${appRoot}/src/forks/clientProcess.js`);
+
+   const startEvent = params.stepTest ? 'startStep' : 'start';
+
+   const testParams = {
+      event: startEvent,
+      params,
+      // storagePath,
+      hosts
+   };
+   clientProcess.send(testParams);
+
+   clientProcess.on('message', (message: any) => {
+      if (!mainWindow) return;
+      switch (message.event) {
+         case 'log':
+            mainWindow.webContents.send('clientLog', message.content);
+            break;
+         case 'finish':
+            if (params.loop)
+               clientProcess.send(testParams);
+            else {
+               mainWindow.webContents.send('testFinish', message.content);
+               clientProcess.kill();
+            }
+            break;
+         case 'report':
+            mainWindow.webContents.send('reportClientList', message.content);
+            break;
+      }
+   });
+});
+
+ipcMain.on('sendMessages', (event) => {
+   clientProcess.send({ event: 'sendStep' });
+   event.sender.send('clientLog', { message: 'Invio messaggi in corso', color: '' });
+});
+
+ipcMain.on('stopTest', (event) => {
+   try {
+      clientProcess.send({ event: 'stop' });
+      event.sender.send('testFinish', 'Test interrotto');
+   }
+   catch (error) {
+      clientProcess.kill();
+   }
+});
+
 // Server
 let serverProcess: ChildProcess;
 ipcMain.on('startServer', (event, { params, ports }) => {
@@ -196,34 +248,6 @@ ipcMain.on('resetReports', () => {
       };
       mainWindow.webContents.send('serverLog', data);
    }
-});
-
-ipcMain.on('getPorts', (event) => {
-   try {
-      let ports = '';// fs.readFileSync(`${storagePath}/storage/serverPorts.json`);
-      ports = JSON.parse(ports);
-      event.sender.send('portList', ports);
-   }
-   catch (error) {
-      const data = {
-         message: error.stack,
-         color: 'red'
-      };
-      event.sender.send('serverLog', data);
-   }
-});
-
-ipcMain.on('updatePorts', (event, messageList) => {
-   // try {
-   //    fs.writeFileSync(`${storagePath}/storage/serverPorts.json`, JSON.stringify(messageList, null, '   '));
-   // }
-   // catch (error) {
-   //    const data = {
-   //       message: error.stack,
-   //       color: 'red'
-   //    };
-   //    event.sender.send('serverLog', data);
-   // }
 });
 
 function saveWindowState () {

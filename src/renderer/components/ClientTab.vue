@@ -18,13 +18,13 @@
          <transition name="fade">
             <EditMessage
                v-if="popEditMessage"
-               :message="messageList[idEditedMsg]"
+               :message="localMessages[idEditedMsg]"
                :index="idEditedMsg"
                @hideEditMessage="hideEditMessage"
                @editMessage="editMessage"
             />
          </transition>
-         <transition name="fade">
+         <!-- <transition name="fade">
             <SaveConfig
                v-if="popSaveConfig"
                :params="params"
@@ -38,12 +38,12 @@
                @hideLoadConfig="hideLoadConfig"
                @loadConfig="loadConfig"
             />
-         </transition>
+         </transition> -->
          <form autocomplete="off" @submit.prevent="startTest">
             <fieldset :disabled="running !== 0">
                <Hosts
                   ref="hosts"
-                  :host-list="hostList"
+                  :host-list="localHosts"
                   @updateHosts="updateHosts"
                   @showAddHost="showAddHost"
                   @deleteHost="deleteHost"
@@ -51,7 +51,7 @@
                />
                <Messages
                   ref="messages"
-                  :message-list="messageList"
+                  :message-list="localMessages"
                   @updateMessages="updateMessages"
                   @showAddMessage="showAddMessage"
                   @showEditMessage="showEditMessage"
@@ -158,7 +158,7 @@
                </div>
             </fieldset>
             <div class="buttons">
-               <div class="button-wrap">
+               <!-- <div class="button-wrap">
                   <i class="material-icons">get_app</i>
                   <button
                      class="save"
@@ -178,7 +178,7 @@
                   >
                      Salva
                   </button>
-               </div>
+               </div> -->
                <div v-if="running === 0" class="button-wrap">
                   <i class="material-icons white">play_arrow</i>
                   <button class="confirm" type="submit">
@@ -220,18 +220,25 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Hosts from './ClientTabHosts.vue';
 import Messages from './ModalMessages.vue';
 import NewHost from './ModalNewHost.vue';
 import NewMessage from './ModalNewMessage.vue';
 import EditMessage from './ModalEditMessage.vue';
-import SaveConfig from './ModalSaveConfig.vue';
-import LoadConfig from './ModalLoadConfig.vue';
+// import SaveConfig from './ModalSaveConfig.vue';
+// import LoadConfig from './ModalLoadConfig.vue';
 import ClientTabReports from './ClientTabReports.vue';
 import { ipcRenderer } from 'electron';
+import { ClientHost, ClientMessage, useClientStore } from '@/stores/client';
 
 const emit = defineEmits(['clientStatus']);
+
+const clientStore = useClientStore();
+
+const { hosts, messages } = storeToRefs(clientStore);
+const { updateHosts: updateStoreHosts, updateMessages: updateStoreMessages } = clientStore;
 
 const running = ref(0);
 const params = ref({
@@ -247,15 +254,15 @@ const params = ref({
    loop: false
 });
 const logs = ref([]);
-const hostList = ref([]);
-const messageList = ref([]);
 const reportList = ref([]);
 const popNewHost = ref(false);
 const popNewMessage = ref(false);
 const popEditMessage = ref(false);
-const popSaveConfig = ref(false);
-const popLoadConfig = ref(false);
+// const popSaveConfig = ref(false);
+// const popLoadConfig = ref(false);
 const idEditedMsg = ref(null);
+const localHosts = ref(hosts.value);
+const localMessages = ref(messages.value);
 
 const slicedLogs = computed(() => {
    if (logs.value.length > 500)
@@ -288,7 +295,7 @@ const startTest = () => {
 
    const obj = {
       params: params.value,
-      hosts: hostList.value.filter((host) => {
+      hosts: localHosts.value.filter((host) => {
          return host.enabled === true;
       })
    };
@@ -304,10 +311,10 @@ const stopTest = () => {
 };
 
 // Host
-const createHost = (host: string) => {
-   hostList.value.push(host);
+const createHost = (host: ClientHost) => {
    popNewHost.value = false;
-   ipcRenderer.send('updateHosts', hostList.value);
+   localHosts.value = [...localHosts.value, host];
+   updateStoreHosts(localHosts.value);
 };
 
 const showAddHost = () => {
@@ -319,38 +326,38 @@ const hideAddHost = () => {
 };
 
 const updateHosts = () => {
-   ipcRenderer.send('updateHosts', hostList.value);
+   updateStoreHosts(localHosts.value);
 };
 
 const deleteHost = (hostId: number) => {
-   hostList.value.splice(hostId, 1);
-   ipcRenderer.send('updateHosts', hostList.value);
+   localHosts.value.splice(hostId, 1);
+   updateStoreHosts(localHosts.value);
 };
 
 const toggleHostCheck = (status: number) => {
    if (running.value !== 0) return;
    const enable = status === 0;
-   hostList.value.forEach((host) => {
+   localHosts.value.forEach((host) => {
       host.enabled = enable;
    });
-   ipcRenderer.send('updateHosts', hostList.value);
+   updateStoreHosts(localHosts.value);
 };
 
 // Messaggi
-const createMessage = (message: any) => {
-   messageList.value.push(message);
+const createMessage = (message: ClientMessage) => {
+   localMessages.value.push(message);
    popNewMessage.value = false;
-   ipcRenderer.send('updateMessages', messageList.value);
+   updateStoreMessages(localMessages.value);
 };
 
-const editMessage = (message: any, index: number) => {
+const editMessage = (message: ClientMessage, index: number) => {
    popEditMessage.value = false;
-   messageList.value[index] = message;
-   ipcRenderer.send('updateMessages', messageList.value);
+   localMessages.value[index] = message;
+   updateStoreMessages(localMessages.value);
 };
 
 const updateMessages = () => {
-   ipcRenderer.send('updateMessages', messageList.value);
+   updateStoreMessages(localMessages.value);
 };
 
 const showAddMessage = () => {
@@ -371,55 +378,18 @@ const hideEditMessage = () => {
 };
 
 const deleteMessage = (messageId: number) => {
-   messageList.value.splice(messageId, 1);
-   ipcRenderer.send('updateMessages', messageList.value);
+   localMessages.value.splice(messageId, 1);
+   updateStoreMessages(localMessages.value);
 };
 
 const toggleMessageCheck = (status: number) => {
    if (running.value !== 0) return;
    const enable = status === 0;
-   messageList.value.forEach((message) => {
+   localMessages.value.forEach((message) => {
       message.enabled = enable;
    });
-   ipcRenderer.send('updateMessages', messageList.value);
+   updateStoreMessages(localMessages.value);
 };
-
-// Convigurazioni
-const showSaveConfig = () => {
-   popSaveConfig.value = true;
-};
-
-const hideSaveConfig = () => {
-   popSaveConfig.value = false;
-};
-
-const saveConfig = (config: any) => {
-   popSaveConfig.value = false;
-   ipcRenderer.send('saveClientConfig', config);
-};
-
-const showLoadConfig = () => {
-   popLoadConfig.value = true;
-};
-
-const hideLoadConfig = () => {
-   popLoadConfig.value = false;
-};
-
-const loadConfig = (config: any) => {
-   popLoadConfig.value = false;
-   params.value = config.params;
-
-   const time = new Date().toLocaleString();
-   const log = {
-      time: time,
-      message: `Configurazione "${config.name}" ripristinata`,
-      color: 'green'
-   };
-
-   logs.value.push(log);
-};
-
 ipcRenderer.on('clientLog', (event, data) => {
    const time = new Date().toLocaleString();
    const { message, color } = data;
@@ -445,15 +415,15 @@ ipcRenderer.on('testFinish', (event, message) => {
    logs.value.push(log);
 });
 
-ipcRenderer.send('getHosts');
-ipcRenderer.on('hostList', (event, hosts) => {
-   hostList.value = hosts;
-});
+// ipcRenderer.send('getHosts');
+// ipcRenderer.on('hosts', (event, hosts) => {
+//    hosts.value = hosts;
+// });
 
-ipcRenderer.send('getMessages');
-ipcRenderer.on('messageList', (event, messages) => {
-   messageList.value = messages;
-});
+// ipcRenderer.send('getMessages');
+// ipcRenderer.on('localMessages', (event, messages) => {
+//    localMessages.value = messages;
+// });
 
 ipcRenderer.on('reportClientList', (event, reports) => {
    reportList.value = reports;

@@ -34,9 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, getCurrentInstance } from 'vue';
+import { ServerPort } from '@/stores/server';
+import { ref, computed, PropType } from 'vue';
 
 const emit = defineEmits(['hideAddPort', 'createPort']);
+
+const props = defineProps({
+   portList: Array as PropType<ServerPort[]>
+});
 
 const port = ref({
    port: null,
@@ -58,9 +63,7 @@ const close = () => {
 };
 
 const confirm = () => {
-   const instance = getCurrentInstance();// TODO: use props
-   const portList = (instance.parent as any).portList;
-   if (portList.findIndex((p: any) => p.port === port.value.port) < 0) {
+   if (props.portList.findIndex((p) => p.port === port.value.port) < 0) {
       emit('createPort', port.value);
       port.value = {
          port: '',
