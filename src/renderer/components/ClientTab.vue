@@ -231,7 +231,9 @@ import EditMessage from './ModalEditMessage.vue';
 // import LoadConfig from './ModalLoadConfig.vue';
 import ClientTabReports from './ClientTabReports.vue';
 import { ipcRenderer } from 'electron';
-import { ClientHost, ClientMessage, useClientStore } from '@/stores/client';
+import { useClientStore } from '@/stores/client';
+import { unproxify } from '../libs/unproxify';
+import { ClientHost, ClientMessage } from 'common/interfaces';
 
 const emit = defineEmits(['clientStatus']);
 
@@ -299,7 +301,7 @@ const startTest = () => {
          return host.enabled === true;
       })
    };
-   ipcRenderer.send('startTest', obj);
+   ipcRenderer.send('startTest', unproxify(obj));
 };
 
 const sendMessages = () => {

@@ -24,7 +24,7 @@ let mainWindow: BrowserWindow;
 let mainWindowState: windowStateKeeper.State;
 
 async function createMainWindow () {
-   const icon = require('../renderer/assets/icons/icon.png');
+   // const icon = require('../renderer/assets/icons/icon.png');
    const window = new BrowserWindow({
       width: mainWindowState.width,
       height: mainWindowState.height,
@@ -34,7 +34,7 @@ async function createMainWindow () {
       minHeight: 500,
       show: !isWindows,
       title: 'Mizar TCP Tester',
-      icon: nativeImage.createFromDataURL(icon.default),
+      // icon: nativeImage.createFromDataURL(icon.default),
       webPreferences: {
          nodeIntegration: true,
          contextIsolation: false,
@@ -150,7 +150,9 @@ else {
 let clientProcess: ChildProcess;
 ipcMain.on('startTest', (event, { params, hosts }) => {
    event.sender.send('clientLog', { message: 'Test avviato', color: '' });
-   // clientProcess = fork(`${appRoot}/src/forks/clientProcess.js`);
+   clientProcess = fork(isDevelopment ? './dist/clientProcess.js' : path.resolve(__dirname, './clientProcess.js'), [], {
+      execArgv: isDevelopment ? ['--inspect=9225'] : undefined
+   });
 
    const startEvent = params.stepTest ? 'startStep' : 'start';
 
@@ -162,7 +164,7 @@ ipcMain.on('startTest', (event, { params, hosts }) => {
    };
    clientProcess.send(testParams);
 
-   clientProcess.on('message', (message: any) => {
+   clientProcess.on('message', (message: {event: string; content: string}) => {
       if (!mainWindow) return;
       switch (message.event) {
          case 'log':

@@ -31,11 +31,6 @@ module.exports = { // Main
       extensions: ['.js', '.json', '.ts'],
       alias: {
          src: path.join(__dirname, 'src/')
-      },
-      fallback: {
-         'pg-native': false,
-         'cpu-features': false,
-         cardinal: false
       }
    },
    plugins: [

@@ -1,8 +1,9 @@
-const Sender = require('../classes/Sender');
-Sends = new Sender(process);
-let interval = null;
+import { Sender } from '../libs/Sender';
 
-process.on('message', message => {
+const Sends = new Sender(process);
+let clientTimer: NodeJS.Timer;
+
+process.on('message', (message: any) => {
    switch (message.event) {
       case 'start':
          Sends.setHosts(message.hosts);
@@ -10,19 +11,19 @@ process.on('message', message => {
          Sends.setStoragePath(message.storagePath);
 
          Sends.startFullTest(() => {
-            let response = {
+            const response = {
                event: 'finish',
                content: 'Test concluso'
             };
             process.send(response);
-            if (interval !== null) clearInterval(interval);
+            if (clientTimer !== undefined) clearInterval(clientTimer);
             Sends.getReports();
          });
 
          Sends.getReports();
 
-         if (interval === null) {
-            interval = setInterval(() => {
+         if (clientTimer === undefined) {
+            clientTimer = setInterval(() => {
                Sends.getReports();
             }, 200);
          }
@@ -33,7 +34,7 @@ process.on('message', message => {
          Sends.setStoragePath(message.storagePath);
 
          Sends.connectClients(() => {
-            let response = {
+            const response = {
                event: 'log',
                content: { message: 'Client connessi', color: '' }
             };
@@ -42,15 +43,15 @@ process.on('message', message => {
 
          Sends.getReports();
 
-         if (interval === null) {
-            interval = setInterval(() => {
+         if (clientTimer === undefined) {
+            clientTimer = setInterval(() => {
                Sends.getReports();
             }, 200);
          }
          break;
       case 'sendStep':
          Sends.sendMessages(() => {
-            let response = {
+            const response = {
                event: 'log',
                content: { message: 'Messaggi inviati', color: '' }
             };
@@ -59,7 +60,7 @@ process.on('message', message => {
          break;
       case 'stop':
          Sends.stopClients(() => {
-            if (interval !== null) clearInterval(interval);
+            if (clientTimer !== undefined) clearInterval(clientTimer);
             Sends.getReports();
             process.exit();
          });

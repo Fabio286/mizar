@@ -89,7 +89,9 @@ import Ports from './ServerTabPorts.vue';
 import NewPort from './ModalNewPort.vue';
 import SerterTabReports from './SerterTabReports.vue';
 import { ipcRenderer } from 'electron';
-import { ServerPort, useServerStore } from '@/stores/server';
+import { useServerStore } from '@/stores/server';
+import { unproxify } from '../libs/unproxify';
+import { ServerPort } from 'common/interfaces';
 
 const emit = defineEmits(['serverStatus']);
 const serverStore = useServerStore();
@@ -129,7 +131,7 @@ const startServer = (e: MouseEvent) => {
          return port.enabled === true;
       })
    };
-   ipcRenderer.send('startServer', obj);
+   ipcRenderer.send('startServer', unproxify(obj));
 };
 
 const stopServer = (e: MouseEvent) => {

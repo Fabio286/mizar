@@ -2,7 +2,8 @@
   "include": [
     "./tests/**/*", 
     "./src/main/**/*", 
-    "./src/renderer/**/*"
+    "./src/renderer/**/*", 
+    "./src/common/**/*"
   ],
   "compilerOptions": {
     "baseUrl": "./",
@@ -19,6 +20,7 @@
     "resolveJsonModule": true,
     "removeComments": true,
     "paths": {
+      "common/*": ["./src/common/*"],
       "@/*": ["./src/renderer/*"],
     }
   }

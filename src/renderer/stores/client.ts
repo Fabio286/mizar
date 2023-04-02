@@ -1,20 +1,8 @@
 import { defineStore } from 'pinia';
-import * as Store from 'electron-store';
+import * as ElectronStore from 'electron-store';
+import { ClientHost, ClientMessage } from 'common/interfaces';
 
-export interface ClientHost {
-   enabled: boolean;
-   host: string;
-   port: number;
-}
-
-export interface ClientMessage {
-   enabled: boolean;
-   format: 'hex' | 'ascii';
-   message: string;
-   name: string;
-}
-
-const persistentStore = new Store({ name: 'client' });
+const persistentStore = new ElectronStore({ name: 'client' });
 
 export const useClientStore = defineStore('client', {
    state: () => ({

@@ -1,12 +1,8 @@
 import { defineStore } from 'pinia';
-import * as Store from 'electron-store';
+import * as ElectronStore from 'electron-store';
+import { ServerPort } from 'common/interfaces';
 
-export interface ServerPort {
-   enabled: boolean;
-   port: number;
-}
-
-const persistentStore = new Store({ name: 'server' });
+const persistentStore = new ElectronStore({ name: 'server' });
 
 export const useServerStore = defineStore('server', {
    state: () => ({

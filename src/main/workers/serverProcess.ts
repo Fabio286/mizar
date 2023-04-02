@@ -1,22 +1,23 @@
-const Server = require('../classes/Server');
-myServer = new Server(process);
-let interval = null;
+import { Server } from '../libs/Server';
 
-process.on('message', message => {
+const myServer = new Server(process);
+let serverTimer: NodeJS.Timer;
+
+process.on('message', (message: {event: string; ports: string; params: any}) => {
    switch (message.event) {
       case 'start':
          myServer.setPorts(message.ports);
          myServer.startServer(message.params);
 
-         if (interval === null) {
-            interval = setInterval(() => {
+         if (serverTimer === undefined) {
+            serverTimer = setInterval(() => {
                myServer.getReports();
             }, 200);
          }
          break;
       case 'stop':
          myServer.stopServer(() => {
-            if (interval !== null) clearInterval(interval);
+            if (serverTimer !== undefined) clearInterval(serverTimer);
             process.exit();
          });
          break;
