@@ -1,9 +1,10 @@
-import { Server } from '../libs/Server';
+import { ServerPort } from 'common/interfaces';
+import { Server, ServerParams } from '../libs/Server';
 
 const myServer = new Server(process);
 let serverTimer: NodeJS.Timer;
 
-process.on('message', (message: {event: string; ports: string; params: any}) => {
+process.on('message', (message: {event: string; ports: ServerPort[]; params: ServerParams}) => {
    switch (message.event) {
       case 'start':
          myServer.setPorts(message.ports);

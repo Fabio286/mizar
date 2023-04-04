@@ -1,14 +1,14 @@
-import { Sender } from '../libs/Sender';
+import { ClientHost } from 'common/interfaces';
+import { Sender, SenderParams } from '../libs/Sender';
 
 const Sends = new Sender(process);
 let clientTimer: NodeJS.Timer;
 
-process.on('message', (message: any) => {
+process.on('message', (message: { event: string; hosts: ClientHost[]; params: SenderParams}) => {
    switch (message.event) {
       case 'start':
          Sends.setHosts(message.hosts);
          Sends.setParams(message.params);
-         Sends.setStoragePath(message.storagePath);
 
          Sends.startFullTest(() => {
             const response = {
@@ -31,7 +31,6 @@ process.on('message', (message: any) => {
       case 'startStep':
          Sends.setHosts(message.hosts);
          Sends.setParams(message.params);
-         Sends.setStoragePath(message.storagePath);
 
          Sends.connectClients(() => {
             const response = {

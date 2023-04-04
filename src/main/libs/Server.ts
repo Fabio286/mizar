@@ -1,15 +1,21 @@
 import { ServerPort } from 'common/interfaces';
 import * as net from 'net';
 
+interface ServerParams {
+   trace: boolean;
+   echo: boolean;
+   alertReset: boolean;
+ }
+
 class Server {
    process: NodeJS.Process;
    trace: boolean;
    echo: boolean;
    alertReset: boolean;
    ports: ServerPort[];
-   server: any[];
-   nBytes: any[];
-   nMsgs: any[];
+   server: net.Server[];
+   nBytes: number[];
+   nMsgs: number[];
 
    constructor (process: NodeJS.Process) {
       this.process = process;
@@ -28,7 +34,7 @@ class Server {
     * @param {*} ports
     * @memberof Server
     */
-   setPorts (ports: any) {
+   setPorts (ports: ServerPort[]) {
       this.ports = ports;
    }
 
@@ -47,7 +53,7 @@ class Server {
       this.process.send(log);
    }
 
-   startServer (params: any) {
+   startServer (params: ServerParams) {
       this.trace = params.trace;
       this.echo = params.echo;
       this.alertReset = params.alertReset;
@@ -59,10 +65,10 @@ class Server {
          this.nBytes[i] = 0;
          this.nMsgs[i] = 0;
 
-         this.server[i].on('connection', (socket: any) => {
+         this.server[i].on('connection', (socket: net.Socket) => {
             if (this.trace) this.sendLog(`Client connesso su porta ${port}`);
 
-            socket.on('data', (msg: any) => {
+            socket.on('data', (msg: Buffer) => {
                const msgString = msg.toString();
                if (this.echo) socket.write(msg);
                this.nBytes[i] += msg.length;
@@ -75,7 +81,7 @@ class Server {
                if (this.trace) this.sendLog(`Client disconnesso su porta ${port}`);
             });
 
-            socket.on('error', (err: any) => {
+            socket.on('error', (err: Error & { code: string }) => {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
@@ -89,7 +95,7 @@ class Server {
             });
          });// <- server
 
-         this.server[i].on('error', (err: any) => {
+         this.server[i].on('error', (err: Error) => {
             this.sendLog(`Errore server su porta ${port}: \n${err}`, 'red');
          });
 
@@ -102,7 +108,7 @@ class Server {
    stopServer (callback: () => void) {
       (async () => {
          for (let i = 0; i < this.server.length; i++) {
-            await this.server[i].close(function () {
+            this.server[i].close(() => {
                this.server[i].unref();
             });
          }
@@ -111,16 +117,16 @@ class Server {
    }
 
    getReports () {
-      const reportList: any[] = [];
+      const reportList: {port: number; sockets: number; data: number; messages: number}[] = [];
       for (let i = 0; i < this.server.length; i++) {
          const report = {
-            port: this.server[i].address().port,
-            sockets: null as any,
+            port: (this.server[i].address() as net.AddressInfo).port,
+            sockets: null as number,
             data: this.nBytes[i],
             messages: this.nMsgs[i]
          };
 
-         this.server[i].getConnections((err: any, nSockets: any) => {
+         this.server[i].getConnections((err: Error, nSockets: number) => {
             if (err) this.sendLog(`Errore report: \n${err}`, 'red');
             report.sockets = nSockets;
             reportList.push(report);
@@ -143,4 +149,4 @@ class Server {
       }
    }
 }
-export { Server };
+export { Server, ServerParams };

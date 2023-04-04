@@ -87,26 +87,12 @@
       "artifactName": "${productName}-${version}-portable.exe"
     },
     "appx": {
-      "displayName": "Antares SQL",
+      "displayName": "Mizar TCP Tester",
       "backgroundColor": "transparent",
       "showNameOnTiles": true,
       "identityName": "62514FabioDiStasio.AntaresSQLClient",
       "publisher": "CN=1A2729ED-865C-41D2-9038-39AE2A63AA52",
       "applicationId": "FabioDiStasio.AntaresSQLClient"
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
     }
   },
   "dependencies": {

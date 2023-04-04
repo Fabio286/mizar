@@ -3,6 +3,18 @@ import { ClientHost, ClientMessage } from 'common/interfaces';
 import * as ElectronStore from 'electron-store';
 const persistentStore = new ElectronStore({ name: 'client' });
 
+interface SenderParams {
+   closeOnEcho: boolean;
+   persistentConnection: boolean;
+   nMsgs: number;
+   tMin: number;
+   tMax: number;
+   nClients: number;
+   trace: boolean;
+   alertReset: boolean;
+   loop: boolean;
+}
+
 class Sender {
    process: NodeJS.Process;
    closeOnEcho: boolean;
@@ -17,15 +29,14 @@ class Sender {
    nConnected: number;
    nClosed: number;
    nTryConnect: number;
-   nReceived: any[];
+   nReceived: number[];
    nSent: number;
    timeStart: Date;
    hosts: ClientHost[];
    messages: ClientMessage[];
-   nHostClients: any[];
-   nHostBytes: any[];
-   nHostMsgs: any[];
-   storagePath: string;
+   nHostClients: number[];
+   nHostBytes: number[];
+   nHostMsgs: number[];
    loop: boolean;
 
    /**
@@ -55,7 +66,6 @@ class Sender {
       this.nHostClients = [];
       this.nHostBytes = [];
       this.nHostMsgs = [];
-      this.storagePath = '';
    }
 
    /**
@@ -74,7 +84,7 @@ class Sender {
     * @param {*} params
     * @memberof Sender
     */
-   setParams (params: any) {
+   setParams (params: SenderParams) {
       this.closeOnEcho = params.closeOnEcho;
       this.persistentConnection = params.persistentConnection;
       this.nMsgs = params.nMsgs;
@@ -84,16 +94,6 @@ class Sender {
       this.trace = params.trace;
       this.alertReset = params.alertReset;
       this.loop = params.loop;
-   }
-
-   /**
-    * Setta il percorso della cartella storage
-    *
-    * @param {string} storagePath
-    * @memberof Sender
-    */
-   setStoragePath (storagePath: string) {
-      this.storagePath = storagePath;
    }
 
    /**
@@ -188,7 +188,7 @@ class Sender {
 
                         const msg = this.randMsg();
 
-                        client.write(msg, (err: any) => {
+                        client.write(msg, (err: Error) => {
                            if (err)
                               this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\nErrore messaggio: ${err}`, 'red');
                            else {
@@ -208,7 +208,7 @@ class Sender {
                this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
             }
 
-            client.on('connect', (err: any) => {
+            client.on('connect', (err: Error) => {
                this.nTryConnect++;
                if (err)
                   this.sendLog(`Errore connessione #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
@@ -236,7 +236,7 @@ class Sender {
                }
             });
 
-            client.on('error', (err: any) => {
+            client.on('error', (err: Error & { code: string }) => {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
@@ -281,7 +281,7 @@ class Sender {
                this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
             }
 
-            client.on('connect', (err: any) => {
+            client.on('connect', (err: Error) => {
                this.nTryConnect++;
                if (err)
                   this.sendLog(`Errore connessione #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
@@ -305,7 +305,7 @@ class Sender {
                if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} chiuso`);
             });
 
-            client.on('error', (err: any) => {
+            client.on('error', (err: Error & { code: string }) => {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
@@ -350,7 +350,7 @@ class Sender {
 
                   const msg = this.randMsg();
 
-                  client.write(msg, (err: any) => {
+                  client.write(msg, (err: Error) => {
                      if (err)
                         this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\nErrore messaggio: ${err}`, 'red');
                      else {
@@ -417,4 +417,4 @@ class Sender {
       }
    }
 }
-export { Sender };
+export { Sender, SenderParams };

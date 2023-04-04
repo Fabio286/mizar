@@ -1,5 +1,5 @@
-import { app, BrowserWindow, nativeImage, ipcMain, Menu } from 'electron';
-import * as fs from 'fs';
+import { app, BrowserWindow, /* nativeImage, */ ipcMain, Menu } from 'electron';
+// import * as fs from 'fs';
 import * as path from 'path';
 import * as Store from 'electron-store';
 import { ChildProcess, fork, Serializable } from 'child_process';
