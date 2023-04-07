@@ -8,14 +8,14 @@ interface ServerParams {
  }
 
 class Server {
-   process: NodeJS.Process;
-   trace: boolean;
-   echo: boolean;
-   alertReset: boolean;
-   ports: ServerPort[];
-   server: net.Server[];
-   nBytes: number[];
-   nMsgs: number[];
+   private process: NodeJS.Process;
+   private trace: boolean;
+   private echo: boolean;
+   private alertReset: boolean;
+   private ports: ServerPort[];
+   private server: net.Server[];
+   private nBytes: number[];
+   private nMsgs: number[];
 
    constructor (process: NodeJS.Process) {
       this.process = process;
@@ -45,10 +45,15 @@ class Server {
     * @param {string} [color=''] Colore del log (green, yellow, red)
     * @memberof Server
     */
-   sendLog (message: string, color = '') {
+   sendLog (message?: string, color = '', i18n?: string, i18nParams?: {[key: string]: string | number}) {
       const log = {
          event: 'log',
-         content: { message, color }
+         content: {
+            message,
+            color,
+            i18n,
+            params: i18nParams
+         }
       };
       this.process.send(log);
    }
@@ -66,7 +71,8 @@ class Server {
          this.nMsgs[i] = 0;
 
          this.server[i].on('connection', (socket: net.Socket) => {
-            if (this.trace) this.sendLog(`Client connesso su porta ${port}`);
+            if (this.trace)
+               this.sendLog(null, '', 'clientConnectedOnPort', { port });
 
             socket.on('data', (msg: Buffer) => {
                const msgString = msg.toString();
@@ -74,33 +80,36 @@ class Server {
                this.nBytes[i] += msg.length;
                this.nMsgs[i]++;
 
-               if (this.trace) this.sendLog(`Messaggio ricevuto su porta ${port}: ${msgString}`);
+               if (this.trace)
+                  this.sendLog(null, '', 'messageReceivedOnPort', { port, message: msgString });
             });// <- socket data
 
             socket.on('end', () => {
-               if (this.trace) this.sendLog(`Client disconnesso su porta ${port}`);
+               if (this.trace)
+                  this.sendLog(null, '', 'clientDisonnectedOnPort', { port });
             });
 
             socket.on('error', (err: Error & { code: string }) => {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
-                        this.sendLog(`Errore client su porta ${port}: \n${err}`, 'yellow');
+                        this.sendLog(null, 'yellow', 'clientErrorOnPort', { port, error: err.toString() });
                      else
-                     if (this.trace) this.sendLog(`Client disconnesso su porta ${port}`);
+                     if (this.trace)
+                        this.sendLog(null, '', 'clientDisonnectedOnPort', { port });
                      break;
                   default:
-                     this.sendLog(`Errore client su porta ${port}: \n${err}`, 'red');
+                     this.sendLog(null, 'red', 'clientErrorOnPort', { port, error: err.toString() });
                }
             });
          });// <- server
 
          this.server[i].on('error', (err: Error) => {
-            this.sendLog(`Errore server su porta ${port}: \n${err}`, 'red');
+            this.sendLog(null, 'red', 'serverErrorOnPort', { port, error: err.toString() });
          });
 
          this.server[i].listen(port, () => {
-            this.sendLog(`In ascolto sulla porta ${port}`);
+            this.sendLog(null, '', 'listenindOnPort', { port });
          });
       }
    }
@@ -127,7 +136,8 @@ class Server {
          };
 
          this.server[i].getConnections((err: Error, nSockets: number) => {
-            if (err) this.sendLog(`Errore report: \n${err}`, 'red');
+            if (err)
+               this.sendLog(null, 'red', 'reportError', { error: err.toString() });
             report.sockets = nSockets;
             reportList.push(report);
 

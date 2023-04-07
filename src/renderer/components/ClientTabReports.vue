@@ -1,29 +1,29 @@
 <template>
    <div id="serverReports" class="box-100">
-      <h3>Report del Test</h3>
+      <h3>{{ t('message.testReport') }}</h3>
       <table>
          <thead>
             <tr>
-               <th>Host</th>
-               <th>Client</th>
-               <th>Messaggi</th>
-               <th>Dati</th>
+               <th>{{ t('word.host', 2) }}</th>
+               <th>{{ t('word.client', 2) }}</th>
+               <th>{{ t('word.message', 2) }}</th>
+               <th>{{ t('word.data', 2) }}</th>
             </tr>
          </thead>
          <tbody>
             <tr v-for="(report, index) in reports" :key="index">
                <td>{{ report.host }}</td>
                <td>{{ report.sockets }}</td>
-               <td><span title="Inviati">{{ report.messages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span title="Ricevuti">{{ report.received }}</span></td>
-               <td><span title="Inviati">{{ report.data.toLocaleString() }} B</span></td>
+               <td><span :title="t('word.sent', 2)">{{ report.messages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span :title="t('word.received', 2)">{{ report.received }}</span></td>
+               <td><span :title="t('word.sent', 2)">{{ report.data.toLocaleString() }} B</span></td>
             </tr>
          </tbody>
          <tfoot>
             <tr>
-               <td>Totali</td>
+               <td>{{ t('word.total', 2) }}</td>
                <td>{{ totSockets }}</td>
-               <td><span title="Inviati">{{ totMessages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span title="Ricevuti">{{ totReceived.toLocaleString() }}</span></td>
-               <td><span title="Inviati">{{ totData.toLocaleString() }} B</span></td>
+               <td><span :title="t('word.sent', 2)">{{ totMessages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span :title="t('word.received', 2)">{{ totReceived.toLocaleString() }}</span></td>
+               <td><span :title="t('word.sent', 2)">{{ totData.toLocaleString() }} B</span></td>
             </tr>
          </tfoot>
       </table>
@@ -31,11 +31,15 @@
 </template>
 
 <script setup lang="ts">
+import { ClientReport } from 'common/interfaces';
 import { PropType, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-   reports: Array as PropType<any[]>
+   reports: Array as PropType<ClientReport[]>
 });
+
+const { t } = useI18n();
 
 const totSockets = computed(() => {
    return props.reports.reduce((prev, cur) => prev + cur.sockets, 0);

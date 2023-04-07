@@ -14,7 +14,22 @@ export interface ClientMessage {
    name: string;
 }
 
+export interface ClientReport {
+   host: string;
+   sockets: number;
+   messages: number;
+   received: number;
+   data: number;
+}
+
 export interface ServerPort {
    enabled: boolean;
    port: number;
+}
+
+export interface ServerReport {
+   port: number;
+   sockets: number;
+   data: number;
+   messages: number;
 }

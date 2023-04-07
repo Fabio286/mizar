@@ -5,8 +5,8 @@
             <NewPort
                v-show="popNewPort"
                :port-list="localPorts"
-               @hideAddPort="hideAddPort"
-               @createPort="createPort"
+               @hide-add-port="hideAddPort"
+               @create-port="createPort"
             />
          </transition>
          <form autocomplete="off" @submit.prevent="startServer">
@@ -14,10 +14,10 @@
                <Ports
                   ref="ports"
                   :port-list="localPorts"
-                  @updatePorts="updatePorts"
-                  @showAddPort="showAddPort"
-                  @deletePort="deletePort"
-                  @togglePortCheck="togglePortCheck"
+                  @update-ports="updatePorts"
+                  @show-add-port="showAddPort"
+                  @delete-port="deletePort"
+                  @toggle-port-check="togglePortCheck"
                />
                <div class="flex box-100">
                   <div class="box-50">
@@ -27,7 +27,7 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Echo Server</span>
+                        <span>{{ t('message.echoServer') }}</span>
                      </label>
                      <label class="checkbox">
                         <input
@@ -35,7 +35,7 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Abilita Trace</span>
+                        <span>{{ t('message.enableTrace') }}</span>
                      </label>
                   </div>
                   <div class="box-50">
@@ -45,7 +45,7 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Allerta ECONNRESET</span>
+                        <span>{{ t('message.alertEconnreset') }}</span>
                      </label>
                   </div>
                </div>
@@ -54,23 +54,23 @@
                <div v-if="running === 0" class="button-wrap">
                   <i class="material-icons white">play_arrow</i>
                   <button class="confirm" type="submit">
-                     Start
+                     {{ t('word.start') }}
                   </button>
                </div>
                <div v-if="running === 1" class="button-wrap">
                   <i class="material-icons white">stop</i>
                   <button class="stop" @click="stopServer">
-                     Stop
+                     {{ t('word.stop') }}
                   </button>
                </div>
             </div>
          </form>
          <transition name="fade">
-            <SerterTabReports
+            <ServerTabReports
                v-if="reportList.length > 0"
                ref="reports"
                :reports="reportList"
-               @resetReports="resetReports"
+               @reset-reports="resetReports"
             />
          </transition>
       </div><!-- /server -->
@@ -87,13 +87,16 @@ import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Ports from './ServerTabPorts.vue';
 import NewPort from './ModalNewPort.vue';
-import SerterTabReports from './SerterTabReports.vue';
+import { ServerPort } from 'common/interfaces';
+import ServerTabReports from './ServerTabReports.vue';
 import { ipcRenderer } from 'electron';
 import { useServerStore } from '@/stores/server';
 import { unproxify } from '../libs/unproxify';
-import { ServerPort } from 'common/interfaces';
+import { useI18n } from 'vue-i18n';
 
 const emit = defineEmits(['serverStatus']);
+const { t } = useI18n();
+
 const serverStore = useServerStore();
 
 const { ports } = storeToRefs(serverStore);
@@ -102,7 +105,7 @@ const { updatePorts: updateStorePorts } = serverStore;
 const running = ref(0);
 const params = ref({
    trace: false,
-   echo: true,
+   echo: false,
    alertReset: false
 });
 const logs = ref([]);
@@ -131,12 +134,12 @@ const startServer = (e: MouseEvent) => {
          return port.enabled === true;
       })
    };
-   ipcRenderer.send('startServer', unproxify(obj));
+   ipcRenderer.send('start-server', unproxify(obj));
 };
 
 const stopServer = (e: MouseEvent) => {
    e.preventDefault();
-   ipcRenderer.send('stopServer');
+   ipcRenderer.send('stop-server');
 };
 
 const updatePorts = () => {
@@ -163,7 +166,7 @@ const deletePort = (portId: number) => {
 };
 
 const resetReports = () => {
-   ipcRenderer.send('resetReports');
+   ipcRenderer.send('reset-reports');
 };
 
 const togglePortCheck = (status: number) => {
@@ -176,33 +179,35 @@ const togglePortCheck = (status: number) => {
    updateStorePorts(localPorts.value);
 };
 
-ipcRenderer.on('serverLog', (event, data) => {
+ipcRenderer.on('server-log', (event, data) => {
    const time = new Date().toLocaleString();
-   const { message, color } = data;
+   const { message, color, params, i18n } = data;
    const log = {
       time: time,
       message,
-      color
+      color,
+      params,
+      i18n
    };
 
    logs.value.push(log);
 });
 
-ipcRenderer.on('serverFinish', (event, message) => {
+ipcRenderer.on('server-finish', (event, message) => {
    running.value = 0;
    reportList.value = [];
    emit('serverStatus', running.value);
    const time = new Date().toLocaleString();
    const log = {
       time: time,
-      message,
+      i18n: message,
       color: ''
    };
 
    logs.value.push(log);
 });
 
-ipcRenderer.on('reportServerList', (event, reports) => {
+ipcRenderer.on('report-server-list', (event, reports) => {
    reportList.value = reports;
 });
 </script>

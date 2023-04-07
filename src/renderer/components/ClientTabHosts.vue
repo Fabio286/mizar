@@ -6,11 +6,12 @@
    >
       <h3>
          <span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus)
-         }}</i></span><span>Hosts</span>
+         }}</i></span><span>
+            {{ t('word.host', 2) }}</span>
       </h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
-            <span>Aggiungi Host</span>
+            <span>{{ t('message.addHost') }}</span>
             <i class="material-icons">add</i>
          </div>
       </div>
@@ -27,7 +28,7 @@
             </label>
             <i
                class="material-icons deleteHost"
-               :title="`Elimina host ${host.host}:${host.port}`"
+               :title="t('message.deleteHost', {host: `${host.host}:${host.port}`})"
                @click="deleteHost(index)"
             >clear</i>
          </li>
@@ -36,8 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { ClientHost } from '@/stores/client';
+import { ClientHost } from 'common/interfaces';
 import { ref, computed, onUpdated, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const root = ref(null);
 
@@ -45,7 +47,9 @@ const props = defineProps({
    hostList: Array as PropType<ClientHost[]>
 });
 
-const emit = defineEmits(['updateHosts', 'showAddHost', 'deleteHost', 'toggleHostCheck']);
+const { t } = useI18n();
+
+const emit = defineEmits(['update-hosts', 'show-add-host', 'delete-host', 'toggle-host-check']);
 
 const checkStatus = computed(() => {
    const checked = props.hostList.filter((host) => {
@@ -65,15 +69,15 @@ const sortedHosts = computed(() => {
 });
 
 const updateHosts = () => {
-   emit('updateHosts');
+   emit('update-hosts');
 };
 
 const showAdd = () => {
-   emit('showAddHost');
+   emit('show-add-host');
 };
 
 const deleteHost = (value: number) => {
-   emit('deleteHost', value);
+   emit('delete-host', value);
 };
 
 const checkIcon = (status: number) => {
@@ -88,7 +92,7 @@ const checkIcon = (status: number) => {
 };
 
 const toggleCheck = (status: number) => {
-   emit('toggleHostCheck', status);
+   emit('toggle-host-check', status);
 };
 
 onUpdated(() => {

@@ -148,8 +148,8 @@ else {
 
 // Client
 let clientProcess: ChildProcess;
-ipcMain.on('startTest', (event, { params, hosts }) => {
-   event.sender.send('clientLog', { message: 'Test avviato', color: '' });
+ipcMain.on('start-test', (event, { params, hosts, messages }) => {
+   event.sender.send('client-log', { message: '', color: '', i18n: 'testStarted' });
    clientProcess = fork(isDevelopment ? './dist/clientProcess.js' : path.resolve(__dirname, './clientProcess.js'), [], {
       execArgv: isDevelopment ? ['--inspect=9225'] : undefined
    });
@@ -159,8 +159,8 @@ ipcMain.on('startTest', (event, { params, hosts }) => {
    const testParams = {
       event: startEvent,
       params,
-      // storagePath,
-      hosts
+      hosts,
+      messages
    };
    clientProcess.send(testParams);
 
@@ -168,32 +168,32 @@ ipcMain.on('startTest', (event, { params, hosts }) => {
       if (!mainWindow) return;
       switch (message.event) {
          case 'log':
-            mainWindow.webContents.send('clientLog', message.content);
+            mainWindow.webContents.send('client-log', message.content);
             break;
          case 'finish':
             if (params.loop)
                clientProcess.send(testParams);
             else {
-               mainWindow.webContents.send('testFinish', message.content);
+               mainWindow.webContents.send('test-finish', message.content);
                clientProcess.kill();
             }
             break;
          case 'report':
-            mainWindow.webContents.send('reportClientList', message.content);
+            mainWindow.webContents.send('report-client-list', message.content);
             break;
       }
    });
 });
 
-ipcMain.on('sendMessages', (event) => {
+ipcMain.on('send-messages', (event) => {
    clientProcess.send({ event: 'sendStep' });
-   event.sender.send('clientLog', { message: 'Invio messaggi in corso', color: '' });
+   event.sender.send('client-log', { i18n: 'sendingMessages', color: '' });
 });
 
-ipcMain.on('stopTest', (event) => {
+ipcMain.on('stop-test', (event) => {
    try {
       clientProcess.send({ event: 'stop' });
-      event.sender.send('testFinish', 'Test interrotto');
+      event.sender.send('test-finish', 'testAborted');
    }
    catch (error) {
       clientProcess.kill();
@@ -202,8 +202,8 @@ ipcMain.on('stopTest', (event) => {
 
 // Server
 let serverProcess: ChildProcess;
-ipcMain.on('startServer', (event, { params, ports }) => {
-   event.sender.send('serverLog', { message: 'Server avviato', color: '' });
+ipcMain.on('start-server', (event, { params, ports }) => {
+   event.sender.send('server-log', { i18n: 'serverStart', color: '' });
    serverProcess = fork(isDevelopment ? './dist/serverProcess.js' : path.resolve(__dirname, './serverProcess.js'), [], {
       execArgv: isDevelopment ? ['--inspect=9224'] : undefined
    });
@@ -219,26 +219,26 @@ ipcMain.on('startServer', (event, { params, ports }) => {
       if (!mainWindow) return;
       switch (message.event) {
          case 'log':
-            mainWindow.webContents.send('serverLog', message.content);
+            mainWindow.webContents.send('server-log', message.content);
             break;
          case 'report':
-            mainWindow.webContents.send('reportServerList', message.content);
+            mainWindow.webContents.send('report-server-list', message.content);
             break;
       }
    });
 });
 
-ipcMain.on('stopServer', (event) => {
+ipcMain.on('stop-server', (event) => {
    try {
       serverProcess.send({ event: 'stop' });
-      event.sender.send('serverFinish', 'Server stoppato');
+      event.sender.send('server-finish', 'serverStop');
    }
    catch (error) {
       serverProcess.kill();
    }
 });
 
-ipcMain.on('resetReports', () => {
+ipcMain.on('reset-reports', () => {
    if (!mainWindow) return;
    try {
       serverProcess.send({ event: 'reset' });
@@ -248,7 +248,7 @@ ipcMain.on('resetReports', () => {
          message: error.stack,
          color: 'red'
       };
-      mainWindow.webContents.send('serverLog', data);
+      mainWindow.webContents.send('server-log', data);
    }
 });
 

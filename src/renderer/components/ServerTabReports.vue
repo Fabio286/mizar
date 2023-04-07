@@ -1,13 +1,13 @@
 <template>
    <div id="serverReports" class="box-100">
-      <h3>Stato del Server</h3>
+      <h3>{{ t('message.serverStatus') }}</h3>
       <table>
          <thead>
             <tr>
-               <th>Porta</th>
-               <th>Socket</th>
-               <th>Messaggi</th>
-               <th>Dati</th>
+               <th>{{ t('word.port', 2) }}</th>
+               <th>{{ t('word.socket', 2) }}</th>
+               <th>{{ t('word.message', 2) }}</th>
+               <th>{{ t('word.data', 2) }}</th>
             </tr>
          </thead>
          <tbody>
@@ -20,7 +20,7 @@
          </tbody>
          <tfoot>
             <tr>
-               <td>Totali</td>
+               <td>{{ t('word.total', 2) }}</td>
                <td>{{ totSockets }}</td>
                <td>{{ totMessages.toLocaleString() }}</td>
                <td>{{ totData.toLocaleString() }} B</td>
@@ -32,10 +32,10 @@
             <i class="material-icons">replay</i>
             <button
                class="save"
-               title="Azzera i dati ricevuti"
+               :title="t('message.resetReceivedData')"
                @click="reset"
             >
-               Reset
+               {{ t('word.reset') }}
             </button>
          </div>
       </div>
@@ -43,27 +43,31 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { computed, PropType } from 'vue';
+import { ServerReport } from 'common/interfaces';
 
-const emit = defineEmits(['resetReports']);
+const emit = defineEmits(['reset-reports']);
+
+const { t } = useI18n();
 
 const props = defineProps({
-   reports: Array as PropType<any[]>
+   reports: Array as PropType<ServerReport[]>
 });
 
 const totSockets = computed(() => {
-   return props.reports.reduce((prev, cur: any) => prev + cur.sockets, 0);
+   return props.reports.reduce((prev, cur) => prev + cur.sockets, 0);
 });
 
 const totMessages = computed(() => {
-   return props.reports.reduce((prev, cur: any) => prev + cur.messages, 0);
+   return props.reports.reduce((prev, cur) => prev + cur.messages, 0);
 });
 
 const totData = computed(() => {
-   return props.reports.reduce((prev, cur: any) => prev + cur.data, 0);
+   return props.reports.reduce((prev, cur) => prev + cur.data, 0);
 });
 
 const reset = () => {
-   emit('resetReports');
+   emit('reset-reports');
 };
 </script>

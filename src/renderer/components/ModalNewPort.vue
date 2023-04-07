@@ -2,9 +2,9 @@
    <div id="popcontainer">
       <div class="popup">
          <div class="box-100">
-            <h4>Nuova porta</h4>
+            <h4>{{ t('message.addPort') }}</h4>
             <div class="input-element">
-               <label>Porta</label>
+               <label>{{ t('word.port', 1) }}</label>
                <input
                   v-model.number="port.port"
                   min="1"
@@ -19,14 +19,14 @@
          </div>
          <div class="buttons">
             <button class="cancel" @click="close">
-               Annulla
+               {{ t('word.cancel') }}
             </button>
             <button
                class="confirm"
                :disabled="validation"
                @click="confirm"
             >
-               Crea
+               {{ t('word.create') }}
             </button>
          </div>
       </div>
@@ -34,14 +34,17 @@
 </template>
 
 <script setup lang="ts">
-import { ServerPort } from '@/stores/server';
+import { ServerPort } from 'common/interfaces';
 import { ref, computed, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['hideAddPort', 'createPort']);
+const emit = defineEmits(['hide-add-port', 'create-port']);
 
 const props = defineProps({
    portList: Array as PropType<ServerPort[]>
 });
+
+const { t } = useI18n();
 
 const port = ref({
    port: null,
@@ -54,7 +57,7 @@ const validation = computed(() => {
 });
 
 const close = () => {
-   emit('hideAddPort');
+   emit('hide-add-port');
    port.value = {
       port: '',
       enabled: true
@@ -64,7 +67,7 @@ const close = () => {
 
 const confirm = () => {
    if (props.portList.findIndex((p) => p.port === port.value.port) < 0) {
-      emit('createPort', port.value);
+      emit('create-port', port.value);
       port.value = {
          port: '',
          enabled: true

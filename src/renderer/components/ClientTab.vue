@@ -4,15 +4,15 @@
          <transition name="fade">
             <NewHost
                v-if="popNewHost"
-               @hideAddHost="hideAddHost"
-               @createHost="createHost"
+               @hide-add-host="hideAddHost"
+               @create-host="createHost"
             />
          </transition>
          <transition name="fade">
             <NewMessage
                v-if="popNewMessage"
-               @hideAddMessage="hideAddMessage"
-               @createMessage="createMessage"
+               @hide-add-message="hideAddMessage"
+               @create-message="createMessage"
             />
          </transition>
          <transition name="fade">
@@ -20,47 +20,32 @@
                v-if="popEditMessage"
                :message="localMessages[idEditedMsg]"
                :index="idEditedMsg"
-               @hideEditMessage="hideEditMessage"
-               @editMessage="editMessage"
+               @hide-edit-message="hideEditMessage"
+               @edit-message="editMessage"
             />
          </transition>
-         <!-- <transition name="fade">
-            <SaveConfig
-               v-if="popSaveConfig"
-               :params="params"
-               @hideSaveConfig="hideSaveConfig"
-               @saveConfig="saveConfig"
-            />
-         </transition>
-         <transition name="fade">
-            <LoadConfig
-               v-if="popLoadConfig"
-               @hideLoadConfig="hideLoadConfig"
-               @loadConfig="loadConfig"
-            />
-         </transition> -->
          <form autocomplete="off" @submit.prevent="startTest">
             <fieldset :disabled="running !== 0">
                <Hosts
                   ref="hosts"
                   :host-list="localHosts"
-                  @updateHosts="updateHosts"
-                  @showAddHost="showAddHost"
-                  @deleteHost="deleteHost"
-                  @toggleHostCheck="toggleHostCheck"
+                  @update-hosts="updateHosts"
+                  @show-add-host="showAddHost"
+                  @delete-host="deleteHost"
+                  @toggle-host-check="toggleHostCheck"
                />
                <Messages
                   ref="messages"
                   :message-list="localMessages"
-                  @updateMessages="updateMessages"
-                  @showAddMessage="showAddMessage"
-                  @showEditMessage="showEditMessage"
-                  @deleteMessage="deleteMessage"
-                  @toggleMessageCheck="toggleMessageCheck"
+                  @update-messages="updateMessages"
+                  @show-add-message="showAddMessage"
+                  @show-edit-message="showEditMessage"
+                  @delete-message="deleteMessage"
+                  @toggle-message-check="toggleMessageCheck"
                />
                <div class="flex box-100">
                   <div class="input-element">
-                     <label>Numero di Messaggi</label>
+                     <label>{{ t('message.numberOfMessages') }}</label>
                      <input
                         v-model.number="params.nMsgs"
                         min="1"
@@ -70,7 +55,7 @@
                      >
                   </div>
                   <div class="input-element">
-                     <label>Numero di Client</label>
+                     <label>{{ t('message.numberOfClients') }}</label>
                      <input
                         v-model.number="params.nClients"
                         min="1"
@@ -82,7 +67,7 @@
                </div>
                <div class="flex box-100">
                   <div class="input-element">
-                     <label>Intervallo Minimo (ms)</label>
+                     <label>{{ t('message.minInterval') }}</label>
                      <input
                         v-model.number="params.tMin"
                         min="0"
@@ -92,7 +77,7 @@
                      >
                   </div>
                   <div class="input-element">
-                     <label>Intervallo Massimo (ms)</label>
+                     <label>{{ t('message.maxInterval') }}</label>
                      <input
                         v-model.number="params.tMax"
                         min="0"
@@ -110,15 +95,15 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Chiudi alla Risposta</span>
+                        <span>{{ t('message.closeOnReply') }}</span>
                      </label>
-                     <label class="checkbox" title="Connessione Persistente">
+                     <label class="checkbox">
                         <input
                            v-model="params.persistentConnection"
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Conn. Persistente</span>
+                        <span>{{ t('message.persistentConnection') }}</span>
                      </label>
                      <label class="checkbox">
                         <input
@@ -126,7 +111,7 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Test a Step</span>
+                        <span>{{ t('message.steptest') }}</span>
                      </label>
                   </div>
                   <div class="box-50">
@@ -136,7 +121,7 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Abilita Trace</span>
+                        <span>{{ t('message.enableTrace') }}</span>
                      </label>
                      <label class="checkbox">
                         <input
@@ -144,61 +129,40 @@
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Allerta ECONNRESET</span>
+                        <span>{{ t('message.alertEconnreset') }}</span>
                      </label>
-                     <label class="checkbox" title="Ripete il test dopo il suo termine">
+                     <label class="checkbox" :title="t('message.loopModeEsplaination')">
                         <input
                            v-model="params.loop"
                            type="checkbox"
                         >
                         <div class="checkbox-block" />
-                        <span>Ripetizione Automatica</span>
+                        <span>{{ t('message.loopMode') }}</span>
                      </label>
                   </div>
                </div>
             </fieldset>
             <div class="buttons">
-               <!-- <div class="button-wrap">
-                  <i class="material-icons">get_app</i>
-                  <button
-                     class="save"
-                     title="Carica configurazione"
-                     :disabled="running !== 0"
-                     @click.prevent="showLoadConfig"
-                  >
-                     Carica
-                  </button>
-               </div>
-               <div class="button-wrap">
-                  <i class="material-icons">save</i>
-                  <button
-                     class="save"
-                     title="Salva configurazione corrente"
-                     @click.prevent="showSaveConfig"
-                  >
-                     Salva
-                  </button>
-               </div> -->
                <div v-if="running === 0" class="button-wrap">
                   <i class="material-icons white">play_arrow</i>
                   <button class="confirm" type="submit">
-                     Start
+                     {{ t('word.start') }}
                   </button>
                </div>
                <div v-if="running !== 0 && params.stepTest" class="button-wrap">
                   <i class="material-icons white">message</i>
                   <button
                      class="confirm"
-                     title="Invia Messaggi"
+                     :title="t('message.sendMessages')"
                      @click.prevent="sendMessages"
                   >
-                     Invia
+                     {{ t('word.send') }}
                   </button>
                </div>
                <div v-if="running !== 0" class="button-wrap">
                   <i class="material-icons white">stop</i>
                   <button class="stop" @click.prevent="stopTest">
-                     Stop
+                     {{ t('word.stop') }}
                   </button>
                </div>
             </div>
@@ -210,7 +174,7 @@
                :reports="reportList"
             />
          </transition>
-      </div><!-- /client -->
+      </div>
       <Console
          ref="console"
          :logs="slicedLogs"
@@ -223,17 +187,16 @@ import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Hosts from './ClientTabHosts.vue';
-import Messages from './ModalMessages.vue';
+import Messages from './ClientMessages.vue';
 import NewHost from './ModalNewHost.vue';
 import NewMessage from './ModalNewMessage.vue';
 import EditMessage from './ModalEditMessage.vue';
-// import SaveConfig from './ModalSaveConfig.vue';
-// import LoadConfig from './ModalLoadConfig.vue';
 import ClientTabReports from './ClientTabReports.vue';
 import { ipcRenderer } from 'electron';
 import { useClientStore } from '@/stores/client';
 import { unproxify } from '../libs/unproxify';
 import { ClientHost, ClientMessage } from 'common/interfaces';
+import { useI18n } from 'vue-i18n';
 
 const emit = defineEmits(['clientStatus']);
 
@@ -260,11 +223,11 @@ const reportList = ref([]);
 const popNewHost = ref(false);
 const popNewMessage = ref(false);
 const popEditMessage = ref(false);
-// const popSaveConfig = ref(false);
-// const popLoadConfig = ref(false);
 const idEditedMsg = ref(null);
 const localHosts = ref(hosts.value);
 const localMessages = ref(messages.value);
+
+const { t } = useI18n();
 
 const slicedLogs = computed(() => {
    if (logs.value.length > 500)
@@ -279,7 +242,7 @@ const startTest = () => {
       const time = new Date().toLocaleString();
       const log = {
          time: time,
-         message: 'Trace disabilitato: Intervalli troppo brevi',
+         i18n: 'tracesDisabledMessage',
          color: 'yellow'
       };
 
@@ -299,17 +262,20 @@ const startTest = () => {
       params: params.value,
       hosts: localHosts.value.filter((host) => {
          return host.enabled === true;
+      }),
+      messages: localMessages.value.filter((message) => {
+         return message.enabled === true;
       })
    };
-   ipcRenderer.send('startTest', unproxify(obj));
+   ipcRenderer.send('start-test', unproxify(obj));
 };
 
 const sendMessages = () => {
-   ipcRenderer.send('sendMessages');
+   ipcRenderer.send('send-messages');
 };
 
 const stopTest = () => {
-   ipcRenderer.send('stopTest');
+   ipcRenderer.send('stop-test');
 };
 
 // Host
@@ -392,42 +358,34 @@ const toggleMessageCheck = (status: number) => {
    });
    updateStoreMessages(localMessages.value);
 };
-ipcRenderer.on('clientLog', (event, data) => {
+ipcRenderer.on('client-log', (event, data) => {
    const time = new Date().toLocaleString();
-   const { message, color } = data;
+   const { message, color, params, i18n } = data;
    const log = {
       time: time,
       message,
-      color
+      color,
+      params,
+      i18n
    };
 
    logs.value.push(log);
 });
 
-ipcRenderer.on('testFinish', (event, message) => {
+ipcRenderer.on('test-finish', (event, message) => {
    running.value = 0;
    emit('clientStatus', running.value);
    const time = new Date().toLocaleString();
    const log = {
       time: time,
-      message,
+      i18n: message,
       color: ''
    };
 
    logs.value.push(log);
 });
 
-// ipcRenderer.send('getHosts');
-// ipcRenderer.on('hosts', (event, hosts) => {
-//    hosts.value = hosts;
-// });
-
-// ipcRenderer.send('getMessages');
-// ipcRenderer.on('localMessages', (event, messages) => {
-//    localMessages.value = messages;
-// });
-
-ipcRenderer.on('reportClientList', (event, reports) => {
+ipcRenderer.on('report-client-list', (event, reports) => {
    reportList.value = reports;
 });
 </script>

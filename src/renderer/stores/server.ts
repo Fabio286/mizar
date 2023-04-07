@@ -6,7 +6,10 @@ const persistentStore = new ElectronStore({ name: 'server' });
 
 export const useServerStore = defineStore('server', {
    state: () => ({
-      ports: persistentStore.get('ports', []) as ServerPort[]
+      ports: persistentStore.get('ports', [{
+         enabled: true,
+         port: 8080
+      }]) as ServerPort[]
    }),
    actions: {
       updatePorts (payload: ServerPort[]) {

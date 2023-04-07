@@ -4,10 +4,10 @@
       ref="root"
       class="box-100"
    >
-      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>Porte</span></h3>
+      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>{{ t('word.port', 2) }}</span></h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
-            <span>Aggiungi Porta</span>
+            <span>{{ t('message.addPort') }}</span>
             <i class="material-icons">add</i>
          </div>
       </div>
@@ -33,14 +33,17 @@
 </template>
 
 <script setup lang="ts">
-import { ServerPort } from '@/stores/server';
+import { ServerPort } from 'common/interfaces';
 import { ref, computed, onUpdated, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['updatePorts', 'showAddPort', 'deletePort', 'togglePortCheck']);
+const emit = defineEmits(['update-ports', 'show-add-port', 'delete-port', 'toggle-port-check']);
 
 const props = defineProps({
    portList: Array as PropType<ServerPort[]>
 });
+
+const { t } = useI18n();
 
 const root = ref(null);
 
@@ -62,15 +65,15 @@ const sortedPorts = computed(() => {
 });
 
 const updatePorts = () => {
-   emit('updatePorts');
+   emit('update-ports');
 };
 
 const showAdd = () => {
-   emit('showAddPort');
+   emit('show-add-port');
 };
 
 const deletePort = (value: number) => {
-   emit('deletePort', value);
+   emit('delete-port', value);
 };
 
 const checkIcon = (status: number) => {
@@ -85,7 +88,7 @@ const checkIcon = (status: number) => {
 };
 
 const toggleCheck = (status: number) => {
-   emit('togglePortCheck', status);
+   emit('toggle-port-check', status);
 };
 
 onUpdated(() => {

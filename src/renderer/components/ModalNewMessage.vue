@@ -2,9 +2,9 @@
    <div id="popcontainer">
       <div class="popup">
          <div class="box-100">
-            <h4>Nuovo Messaggio</h4>
+            <h4>{{ t('message.addMessage') }}</h4>
             <div class="input-element">
-               <label>Nome</label>
+               <label>{{ t('word.name', 1) }}</label>
                <input
                   v-model="message.name"
                   type="text"
@@ -13,18 +13,18 @@
                >
             </div>
             <div class="input-element">
-               <label>Messaggio</label>
+               <label>{{ t('word.message', 1) }}</label>
                <textarea
                   v-model="message.message"
                   required
-               >Corpo del messaggio</textarea>
+               />
             </div>
          </div>
          <div class="input-element">
-            <label>Formato</label>
+            <label>{{ t('word.format') }}</label>
             <select v-model="message.format" required>
                <option value="" disabled>
-                  Seleziona
+                  {{ t('word.select') }}
                </option>
                <option value="ascii">
                   ASCII
@@ -36,14 +36,14 @@
          </div>
          <div class="buttons">
             <button class="cancel" @click="close">
-               Annulla
+               {{ t('word.cancel') }}
             </button>
             <button
                class="confirm"
                :disabled="validation"
                @click="confirm"
             >
-               Crea
+               {{ t('word.create') }}
             </button>
          </div>
       </div>
@@ -52,8 +52,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['hideAddMessage', 'createMessage']);
+const emit = defineEmits(['hide-add-message', 'create-message']);
 
 const message = ref({
    message: '',
@@ -62,16 +63,18 @@ const message = ref({
    format: ''
 });
 
+const { t } = useI18n();
+
 const validation = computed(() => {
    return message.value.message === '' || message.value.name === '' || message.value.format === '';
 });
 
 const close = () => {
-   emit('hideAddMessage');
+   emit('hide-add-message');
 };
 
 const confirm = () => {
-   emit('createMessage', message.value);
+   emit('create-message', message.value);
    message.value = {
       message: '',
       name: '',

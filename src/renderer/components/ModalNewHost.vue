@@ -2,9 +2,9 @@
    <div id="popcontainer">
       <div class="popup">
          <div class="box-100">
-            <h4>Nuovo Host</h4>
+            <h4>{{ t('message.addHost') }}</h4>
             <div class="input-element">
-               <label>Indirizzo Host</label>
+               <label>{{ t('message.hostAddress') }}</label>
                <input
                   v-model="host.host"
                   type="text"
@@ -13,7 +13,7 @@
                >
             </div>
             <div class="input-element">
-               <label>Porta</label>
+               <label>{{ t('word.port', 1) }}</label>
                <input
                   v-model.number="host.port"
                   min="1"
@@ -25,14 +25,14 @@
          </div>
          <div class="buttons">
             <button class="cancel" @click="close">
-               Annulla
+               {{ t('word.cancel') }}
             </button>
             <button
                class="confirm"
                :disabled="validation"
                @click="confirm"
             >
-               Crea
+               {{ t('word.create') }}
             </button>
          </div>
       </div>
@@ -41,8 +41,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const emit = defineEmits(['hideAddHost', 'createHost']);
+const emit = defineEmits(['hide-add-host', 'create-host']);
 
 const host = ref({
    host: '',
@@ -50,16 +51,18 @@ const host = ref({
    enabled: true
 });
 
+const { t } = useI18n();
+
 const validation = computed(() => {
    return host.value.host === '' || host.value.port === '';
 });
 
 const close = () => {
-   emit('hideAddHost');
+   emit('hide-add-host');
 };
 
 const confirm = () => {
-   emit('createHost', host.value);
+   emit('create-host', host.value);
    host.value = {
       host: '',
       port: '',

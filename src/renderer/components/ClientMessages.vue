@@ -4,10 +4,10 @@
       ref="root"
       class="box-100"
    >
-      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>Messaggi</span></h3>
+      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>{{ t('word.message', 2) }}</span></h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
-            <span>Aggiungi Messaggio</span>
+            <span>{{ t('message.addMessage') }}</span>
             <i class="material-icons">add</i>
          </div>
       </div>
@@ -25,12 +25,12 @@
             </label>
             <i
                class="material-icons editMessage"
-               :title="`Modifica messaggio ${message.name}`"
+               :title="t('message.editMessage', { message: message.name })"
                @click="showEdit(index)"
             >edit</i>
             <i
                class="material-icons deleteMessage"
-               :title="`Elimina messaggio ${message.name}`"
+               :title="t('message.deleteMessage', { message: message.name })"
                @click="deleteMessage(index)"
             >clear</i>
          </li>
@@ -39,20 +39,24 @@
 </template>
 
 <script setup lang="ts">
+import { ClientMessage } from 'common/interfaces';
 import { ref, computed, onUpdated, PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
-   messageList: Array as PropType<any[]>
+   messageList: Array as PropType<ClientMessage[]>
 });
+
+const { t } = useI18n();
 
 const root = ref(null);
 
 const emit = defineEmits([
-   'updateMessages',
-   'showAddMessage',
-   'showEditMessage',
-   'deleteMessage',
-   'toggleMessageCheck'
+   'update-messages',
+   'show-add-message',
+   'show-edit-message',
+   'delete-message',
+   'toggle-message-check'
 ]);
 
 const checkStatus = computed(() => {
@@ -78,18 +82,18 @@ const truncate = (text: string, length: number, suffix: string) => {
 };
 
 const updateMessages = () => {
-   emit('updateMessages');
+   emit('update-messages');
 };
 
 const showAdd = () => {
-   emit('showAddMessage');
+   emit('show-add-message');
 };
 
 const showEdit = (index: number) => {
-   emit('showEditMessage', index);
+   emit('show-edit-message', index);
 };
 const deleteMessage = (index: number) => {
-   emit('deleteMessage', index);
+   emit('delete-message', index);
 };
 
 const checkIcon = (status: number) => {
@@ -104,7 +108,7 @@ const checkIcon = (status: number) => {
 };
 
 const toggleCheck = (status: number) => {
-   emit('toggleMessageCheck', status);
+   emit('toggle-message-check', status);
 };
 
 onUpdated(() => {

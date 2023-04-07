@@ -1,66 +1,68 @@
-import { ClientHost } from 'common/interfaces';
+import { ClientHost, ClientMessage } from 'common/interfaces';
 import { Sender, SenderParams } from '../libs/Sender';
 
-const Sends = new Sender(process);
+const sender = new Sender(process);
 let clientTimer: NodeJS.Timer;
 
-process.on('message', (message: { event: string; hosts: ClientHost[]; params: SenderParams}) => {
+process.on('message', (message: { event: string; hosts: ClientHost[]; messages: ClientMessage[]; params: SenderParams}) => {
    switch (message.event) {
       case 'start':
-         Sends.setHosts(message.hosts);
-         Sends.setParams(message.params);
+         sender.setHosts(message.hosts);
+         sender.setMessages(message.messages);
+         sender.setParams(message.params);
 
-         Sends.startFullTest(() => {
+         sender.startFullTest(() => {
             const response = {
                event: 'finish',
-               content: 'Test concluso'
+               content: 'testEnded'
             };
             process.send(response);
             if (clientTimer !== undefined) clearInterval(clientTimer);
-            Sends.getReports();
+            sender.getReports();
          });
 
-         Sends.getReports();
+         sender.getReports();
 
          if (clientTimer === undefined) {
             clientTimer = setInterval(() => {
-               Sends.getReports();
+               sender.getReports();
             }, 200);
          }
          break;
       case 'startStep':
-         Sends.setHosts(message.hosts);
-         Sends.setParams(message.params);
+         sender.setHosts(message.hosts);
+         sender.setMessages(message.messages);
+         sender.setParams(message.params);
 
-         Sends.connectClients(() => {
+         sender.connectClients(() => {
             const response = {
                event: 'log',
-               content: { message: 'Client connessi', color: '' }
+               content: { i18n: 'clientsConnected', color: '' }
             };
             process.send(response);
          });
 
-         Sends.getReports();
+         sender.getReports();
 
          if (clientTimer === undefined) {
             clientTimer = setInterval(() => {
-               Sends.getReports();
+               sender.getReports();
             }, 200);
          }
          break;
-      case 'sendStep':
-         Sends.sendMessages(() => {
+      case 'sendertep':
+         sender.sendMessages(() => {
             const response = {
                event: 'log',
-               content: { message: 'Messaggi inviati', color: '' }
+               content: { i18n: 'messagesSent', color: '' }
             };
             process.send(response);
          });
          break;
       case 'stop':
-         Sends.stopClients(() => {
+         sender.stopClients(() => {
             if (clientTimer !== undefined) clearInterval(clientTimer);
-            Sends.getReports();
+            sender.getReports();
             process.exit();
          });
          break;

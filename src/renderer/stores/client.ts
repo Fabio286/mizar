@@ -6,8 +6,17 @@ const persistentStore = new ElectronStore({ name: 'client' });
 
 export const useClientStore = defineStore('client', {
    state: () => ({
-      hosts: persistentStore.get('hosts', []) as ClientHost[],
-      messages: persistentStore.get('messages', []) as ClientMessage[]
+      hosts: persistentStore.get('hosts', [{
+         enabled: true,
+         host: 'localhost',
+         port: 8080
+      }]) as ClientHost[],
+      messages: persistentStore.get('messages', [{
+         enabled: true,
+         format: 'ascii',
+         message: 'Hello, World!',
+         name: 'Hello, World!'
+      }]) as ClientMessage[]
    }),
    actions: {
       updateHosts (payload: ClientHost[]) {

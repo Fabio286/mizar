@@ -1,7 +1,5 @@
 import * as net from 'net';
 import { ClientHost, ClientMessage } from 'common/interfaces';
-import * as ElectronStore from 'electron-store';
-const persistentStore = new ElectronStore({ name: 'client' });
 
 interface SenderParams {
    closeOnEcho: boolean;
@@ -13,31 +11,32 @@ interface SenderParams {
    trace: boolean;
    alertReset: boolean;
    loop: boolean;
+   messages: ClientMessage[];
 }
 
 class Sender {
-   process: NodeJS.Process;
-   closeOnEcho: boolean;
-   persistentConnection: boolean;
-   nMsgs: number;
-   tMin: number;
-   tMax: number;
-   nClients: number;
-   trace: boolean;
-   alertReset: boolean;
-   hexMsg: boolean;
-   nConnected: number;
-   nClosed: number;
-   nTryConnect: number;
-   nReceived: number[];
-   nSent: number;
-   timeStart: Date;
-   hosts: ClientHost[];
-   messages: ClientMessage[];
-   nHostClients: number[];
-   nHostBytes: number[];
-   nHostMsgs: number[];
-   loop: boolean;
+   private process: NodeJS.Process;
+   private closeOnEcho: boolean;
+   private persistentConnection: boolean;
+   private nMsgs: number;
+   private tMin: number;
+   private tMax: number;
+   private nClients: number;
+   private trace: boolean;
+   private alertReset: boolean;
+   private hexMsg: boolean;
+   private nConnected: number;
+   private nClosed: number;
+   private nTryConnect: number;
+   private nReceived: number[];
+   private nSent: number;
+   private timeStart: Date;
+   private hosts: ClientHost[];
+   private messages: ClientMessage[];
+   private nHostClients: number[];
+   private nHostBytes: number[];
+   private nHostMsgs: number[];
+   private loop: boolean;
 
    /**
     *Creates an instance of Sender.
@@ -79,6 +78,16 @@ class Sender {
    }
 
    /**
+    * Setta gli hosts
+    *
+    * @param {*} messages
+    * @memberof Sender
+    */
+   setMessages (messages: ClientMessage[]) {
+      this.messages = messages;
+   }
+
+   /**
     * Setta i parametri del messaggio
     *
     * @param {*} params
@@ -102,12 +111,8 @@ class Sender {
     * @memberof Sender
     */
    loadMessages () {
-      if (this.trace) this.sendLog('Lettura dei messaggi');
-      const messages = persistentStore.get('messages', []) as ClientMessage[];
-      this.messages = messages.filter((message) => {
-         return message.enabled === true;
-      });
-      if (this.trace) this.sendLog(`Messaggi caricari: ${this.messages.length}`);
+      if (this.trace)
+         this.sendLog(null, '', 'messagesLoaded', { mNumber: this.messages.length });
    }
 
    /**
@@ -117,10 +122,15 @@ class Sender {
     * @param {string} [color=''] Colore del log (green, yellow, red)
     * @memberof Sender
     */
-   sendLog (message: string, color = '') {
+   sendLog (message?: string, color = '', i18n?: string, i18nParams?: {[key: string]: string | number}) {
       const log = {
          event: 'log',
-         content: { message, color }
+         content: {
+            message,
+            color,
+            i18n,
+            params: i18nParams
+         }
       };
       this.process.send(log);
    }
@@ -145,7 +155,7 @@ class Sender {
 
          return msg;
       }
-      else return 'Nessun messaggio specificato';
+      else return '';
    }
 
    /**
@@ -178,8 +188,11 @@ class Sender {
             const clientId = i + 1;
 
             try {
+               this.nTryConnect++;
+
                client.connect(params, () => {
-                  if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} aperto`);
+                  if (this.trace)
+                     this.sendLog(null, '', 'socketOpen', { number: clientId, host: params.host, port: params.port });
                   this.nHostClients[x]++;
 
                   (async () => {
@@ -190,7 +203,7 @@ class Sender {
 
                         client.write(msg, (err: Error) => {
                            if (err)
-                              this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\nErrore messaggio: ${err}`, 'red');
+                              this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                            else {
                               this.nSent++;
                               this.nHostMsgs[x]++;
@@ -198,20 +211,19 @@ class Sender {
                            }
                         });
 
-                        if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} messaggio #${i + 1}`);
+                        if (this.trace) this.sendLog(null, '', 'socketMessage', { number: clientId, host: params.host, port: params.port, mNumber: i + 1 });
                         if (i + 1 === this.nMsgs && !this.closeOnEcho && !this.persistentConnection) client.end();
                      }// <- msg for
                   })();
                });
             }
             catch (err) {
-               this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+               this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
             }
 
             client.on('connect', (err: Error) => {
-               this.nTryConnect++;
                if (err)
-                  this.sendLog(`Errore connessione #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+                  this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                else
                   this.nConnected++;
                   // if (this.nConnected === (this.nClients * this.hosts.length)) this.getReport();
@@ -222,12 +234,14 @@ class Sender {
                if (this.closeOnEcho)
                   client.end();
 
-               if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} risposta: ${data}`);
+               if (this.trace)
+                  this.sendLog(null, '', 'socketReply', { number: clientId, host: params.host, port: params.port, reply: data.toString() });
             });
 
             client.on('close', () => {
                this.nClosed++;
-               if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} chiuso`);
+               if (this.trace)
+                  this.sendLog(null, '', 'socketClosed', { number: clientId, host: params.host, port: params.port });
 
                // Misura tempo esecuzione
                if (this.nClosed === this.nTryConnect) {
@@ -240,11 +254,10 @@ class Sender {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
-                        this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'yellow');
-
+                        this.sendLog(null, 'yellow', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                      break;
                   default:
-                     this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+                     this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                }
             });
          }// <- clients for
@@ -272,19 +285,20 @@ class Sender {
             const clientId = i + 1;
 
             try {
+               this.nTryConnect++;
+
                client.connect(params, () => {
-                  if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} aperto`);
+                  if (this.trace) this.sendLog(null, '', 'socketOpen', { number: clientId, host: params.host, port: params.port });
                   this.nHostClients[x]++;
                });
             }
             catch (err) {
-               this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+               this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
             }
 
             client.on('connect', (err: Error) => {
-               this.nTryConnect++;
                if (err)
-                  this.sendLog(`Errore connessione #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+                  this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                else
                   this.nConnected++;
                   // if (this.nConnected === (this.nClients * this.hosts.length)) this.getReport();
@@ -297,23 +311,24 @@ class Sender {
                if (this.closeOnEcho)
                   client.end();
 
-               if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} risposta: ${data}`);
+               if (this.trace)
+                  this.sendLog(null, '', 'socketReply', { number: clientId, host: params.host, port: params.port, reply: data.toString() });
             });
 
             client.on('close', () => {
                this.nClosed++;
-               if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} chiuso`);
+               if (this.trace)
+                  this.sendLog(null, '', 'socketClosed', { number: clientId, host: params.host, port: params.port });
             });
 
             client.on('error', (err: Error & { code: string }) => {
                switch (err.code) {
                   case 'ECONNRESET':
                      if (this.alertReset)
-                        this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'yellow');
-
+                        this.sendLog(null, 'yellow', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                      break;
                   default:
-                     this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\n${err}`, 'red');
+                     this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, message: err.toString() });
                }
             });
          }// <- clients for
@@ -333,10 +348,10 @@ class Sender {
       this.nSent = 0;
 
       /** Applica uno sleep */
-      function delay () {
+      const delay = () => {
          const wait = Math.floor((Math.random() * this.tMax) + this.tMin);
          return new Promise(resolve => setTimeout(resolve, wait));
-      }
+      };
 
       for (let x = 0; x < this.hosts.length; x++) { // hosts for
          for (let i = 0; i < this.hosts[x].clients.length; i++) { // clients for
@@ -352,7 +367,7 @@ class Sender {
 
                   client.write(msg, (err: Error) => {
                      if (err)
-                        this.sendLog(`Socket #${clientId} su ${params.host}:${params.port}:\nErrore messaggio: ${err}`, 'red');
+                        this.sendLog(null, 'red', 'logOnSocket', { number: clientId, host: params.host, port: params.port, error: err.toString() });
                      else {
                         this.nSent++;
                         this.nHostMsgs[x]++;
@@ -361,7 +376,7 @@ class Sender {
                      }
                   });
 
-                  if (this.trace) this.sendLog(`Socket #${clientId} su ${params.host}:${params.port} messaggio #${i + 1}`);
+                  if (this.trace) this.sendLog(null, '', 'socketMessage', { number: clientId, host: params.host, port: params.port, mNumber: i + 1 });
                }// <- msg for
             })();
          }// <- clients for
@@ -370,10 +385,10 @@ class Sender {
 
    /** Genera il report su console */
    getConsoleReports () {
-      const end = new Date().getMilliseconds() - this.timeStart.getMilliseconds();
-      const report = `Durata del test: ${end}ms`;
+      const end = Number(new Date()) - Number(this.timeStart);
+      const i18n = 'testDuration';
 
-      this.sendLog(report, 'green');
+      this.sendLog(null, 'green', i18n, { ms: end });
    }
 
    stopClients (callback: () => void) {
