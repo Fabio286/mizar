@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@electron/remote": "~2.0.1",
-    "@vueuse/core": "~8.7.5",
+    "@vueuse/core": "~9.13.0",
     "electron-log": "~4.4.1",
     "electron-store": "~8.1.0",
     "electron-updater": "~4.6.5",
