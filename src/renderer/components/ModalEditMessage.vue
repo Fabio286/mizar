@@ -1,6 +1,6 @@
 <template>
    <div id="popcontainer">
-      <div class="popup">
+      <div class="popup" :style="'min-width: 350px;'">
          <div class="box-100">
             <h4>{{ t('message.editMessage') }}</h4>
             <div class="input-element">
@@ -17,6 +17,7 @@
                <textarea
                   v-model="staticMsg.message"
                   required
+                  rows="5"
                />
             </div>
          </div>

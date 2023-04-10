@@ -74,6 +74,6 @@ const confirm = () => {
       };
       errMsg.value = '';
    }
-   else errMsg.value = 'Porta già esistente!';
+   else errMsg.value = 'Port already exists!';
 };
 </script>

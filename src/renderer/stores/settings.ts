@@ -21,10 +21,7 @@ export const useSettingsStore = defineStore('settings', {
          this.locale = locale;
          i18n.global.locale = locale;
          settingsStore.set('locale', this.locale);
-      },
-      changePageSize (limit: number) {
-         this.dataTabLimit = limit;
-         settingsStore.set('data_tab_limit', this.dataTabLimit);
+         console.log(this.locale);
       },
       changeApplicationTheme (theme: string) {
          this.applicationTheme = theme;

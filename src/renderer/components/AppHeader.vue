@@ -30,17 +30,29 @@
             </transition>
          </div>
       </nav>
+      <div
+         class="navSettings"
+         :title="t('word.settings')"
+         @click="isSettingModal=true"
+      >
+         <i class="material-icons">settings</i>
+      </div>
+      <ModalSettings v-if="isSettingModal" @hide-settings="isSettingModal=false" />
    </header>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ModalSettings from './ModalSettings.vue';
 
 defineProps({
    selTab: Number,
    clientStatus: Number,
    serverStatus: Number
 });
+
+const isSettingModal = ref(false);
 
 const emit = defineEmits(['selectTab']);
 

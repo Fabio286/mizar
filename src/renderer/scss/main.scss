@@ -163,7 +163,8 @@ label {
 }
 
 #header {
-  padding: 10px 15px 0;
+  padding: 0 15px;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
@@ -189,7 +190,7 @@ label {
 }
 
 #appTabs .navTab {
-  padding: 10px 30px 15px;
+  padding: 17px 30px 15px;
   cursor: pointer;
   font-size: 14px;
   opacity: 0.6;
@@ -208,9 +209,20 @@ label {
 #appTabs .navTab .running {
   position: absolute;
   right: 5px;
-  top: 7px;
+  top: 14px;
   color: #33ce33;
   font-size: 22px;
+}
+
+.navSettings {
+  padding: 5px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 #main {
@@ -578,6 +590,10 @@ fieldset:not(:disabled) #messageList li:hover .editMessage {
   box-shadow: 0 0 10px -2px #000;
   max-width: 70vw;
   max-height: 90vh;
+
+  .buttons {
+    justify-content: flex-end;
+  }
 }
 
 .popup h4 {
@@ -591,7 +607,7 @@ fieldset:not(:disabled) #messageList li:hover .editMessage {
 
 .buttons {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
 }
 
 .buttons button {

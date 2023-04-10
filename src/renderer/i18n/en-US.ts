@@ -19,7 +19,11 @@ export const enUS = {
       cancel: 'Cancel',
       edit: 'Edit',
       create: 'Create',
-      reset: 'Reset'
+      reset: 'Reset',
+      settings: 'Settings',
+      close: 'Close',
+      locale: 'Locale',
+      author: 'Author'
    },
    message: {
       running: 'Running',
