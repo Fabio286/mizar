@@ -1,15 +1,15 @@
-import { app, BrowserWindow, /* nativeImage, */ ipcMain, Menu } from 'electron';
-// import * as fs from 'fs';
+import { app, BrowserWindow, nativeImage, ipcMain, Menu } from 'electron';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as Store from 'electron-store';
 import { ChildProcess, fork, Serializable } from 'child_process';
 import * as windowStateKeeper from 'electron-window-state';
 import * as remoteMain from '@electron/remote/main';
-
-// import ipcHandlers from './ipc-handlers';
+import { autoUpdater } from 'electron-updater';
 
 Store.initRenderer();
 const settingsStore = new Store({ name: 'settings' });
+autoUpdater.allowPrerelease = settingsStore.get('allow_prerelease', true) as boolean;
 // const appTheme = settingsStore.get('application_theme');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isMacOS = process.platform === 'darwin';
@@ -24,7 +24,7 @@ let mainWindow: BrowserWindow;
 let mainWindowState: windowStateKeeper.State;
 
 async function createMainWindow () {
-   // const icon = require('../renderer/assets/icons/icon.png');
+   const icon = require('../../assets/mizar-64.png');
    const window = new BrowserWindow({
       width: mainWindowState.width,
       height: mainWindowState.height,
@@ -34,7 +34,7 @@ async function createMainWindow () {
       minHeight: 500,
       show: !isWindows,
       title: 'Mizar TCP Tester',
-      // icon: nativeImage.createFromDataURL(icon.default),
+      icon: nativeImage.createFromDataURL(icon.default),
       webPreferences: {
          nodeIntegration: true,
          contextIsolation: false,

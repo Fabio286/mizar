@@ -60,7 +60,7 @@ export const enUS = {
       socketOpen: 'Socket #{number} on {host}:{port} open',
       socketClosed: 'Socket #{number} on {host}:{port} closed',
       socketMessage: 'Socket #{number} on {host}:{port} message #{mNumber}',
-      socketReply: 'Socket #{number} on {host}:{port} reply #{reply}',
+      socketReply: 'Socket #{number} on {host}:{port} reply: {reply}',
       logOnSocket: 'Socket #{number} on {host}:{port}: {message}',
       loadingMessages: 'Loading messages',
       messagesLoaded: 'Messages loaded: {mNumber}',

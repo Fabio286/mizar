@@ -19,6 +19,7 @@
                </select>
             </div>
             <div class="creditsBox">
+               <img :src="appLogo" width="128">
                <div>
                   {{ appName }} v{{ appVersion }}
                </div>
@@ -56,6 +57,7 @@ const emit = defineEmits(['hide-settings', 'create-port']);
 const { t } = useI18n();
 
 const appAuthor = 'Fabio Di Stasio';
+const appLogo = require('../images/mizar.svg');
 const localLocale: Ref<AvailableLocale> = ref(null);
 
 const locales = computed(() => {

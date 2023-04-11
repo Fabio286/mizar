@@ -4,7 +4,7 @@ const persistentStore = new Store({ name: 'settings' });
 
 export const useApplicationStore = defineStore('application', {
    state: () => ({
-      appName: 'Mistral TCP tester',
+      appName: 'Mizar TCP tester',
       appVersion: process.env.PACKAGE_VERSION || '0',
       cachedVersion: persistentStore.get('cached_version', '0') as string,
       isLoading: false,
