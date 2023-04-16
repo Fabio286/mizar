@@ -75,7 +75,16 @@ class Server {
                this.sendLog(null, '', 'clientConnectedOnPort', { port });
 
             socket.on('data', (msg: Buffer) => {
-               const msgString = msg.toString();
+               let msgString: string;
+
+               try {
+                  new TextDecoder('utf8', { fatal: true }).decode(msg);
+                  msgString = msg.toString('utf-8');
+               }
+               catch (err) {
+                  msgString = msg.toString('hex');
+               }
+
                if (this.echo) socket.write(msg);
                this.nBytes[i] += msg.length;
                this.nMsgs[i]++;

@@ -142,8 +142,8 @@ class Sender {
          let msg;
 
          switch (this.messages[index].format) {
-            case 'ascii':
-               msg = Buffer.from(this.messages[index].message, 'ascii');
+            case 'utf-8':
+               msg = Buffer.from(this.messages[index].message, 'utf-8');
                break;
             case 'hex':
                msg = Buffer.from(this.messages[index].message.replace(/\s|0x/g, ''), 'hex');

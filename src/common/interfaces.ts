@@ -9,7 +9,7 @@ export interface ClientHost {
 
 export interface ClientMessage {
    enabled: boolean;
-   format: 'hex' | 'ascii' | 'binary';
+   format: 'hex' | 'utf-8' | 'binary';
    message: string;
    name: string;
 }

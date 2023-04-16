@@ -13,7 +13,7 @@ export const useClientStore = defineStore('client', {
       }]) as ClientHost[],
       messages: persistentStore.get('messages', [{
          enabled: true,
-         format: 'ascii',
+         format: 'utf-8',
          message: 'Hello, World!',
          name: 'Hello, World!'
       }]) as ClientMessage[]

@@ -27,8 +27,8 @@
                <option value="" disabled>
                   {{ t('word.select') }}
                </option>
-               <option value="ascii">
-                  ASCII
+               <option value="utf-8">
+                  UTF-8
                </option>
                <option value="hex">
                   HEX
