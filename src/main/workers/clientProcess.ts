@@ -50,7 +50,7 @@ process.on('message', (message: { event: string; hosts: ClientHost[]; messages: 
             }, 200);
          }
          break;
-      case 'sendertep':
+      case 'sendStep':
          sender.sendMessages(() => {
             const response = {
                event: 'log',
