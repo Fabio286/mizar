@@ -146,15 +146,7 @@ const config = {
          },
          {
             test: /\.(woff|woff2|ttf|eot)$/,
-            type: 'asset',
-            parser: {
-               dataUrlCondition: {
-                  maxSize: 8 * 1024
-               }
-            },
-            generator: {
-               filename: 'fonts/[hash][ext][query]'
-            }
+            type: 'asset/resource'
          }
       ]
    }
