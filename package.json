@@ -1,6 +1,6 @@
 {
   "name": "mizar",
-  "productName": "Mizar TCP Tester",
+  "productName": "Mizar",
   "version": "1.0.0",
   "description": "A TCP client/server test/debug tool",
   "license": "MIT",
