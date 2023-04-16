@@ -82,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, Ref, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Ports from './ServerTabPorts.vue';
@@ -112,17 +112,14 @@ const logs = ref([]);
 const reportList = ref([]);
 const popNewPort = ref(false);
 const localPorts = ref(ports.value);
+const logsCache = ref([]);
+const logsInterval: Ref<NodeJS.Timer> = ref(null);
 
 const slicedLogs = computed(() => {
    if (logs.value.length > 500)
-      logs.value = logs.value.slice(-500);
-
+      return logs.value.slice(-500);
    return logs.value;
 });
-
-// const saveTest = (e: MouseEvent) => {
-//    e.preventDefault();
-// };
 
 const startServer = (e: MouseEvent) => {
    e.preventDefault();
@@ -190,7 +187,7 @@ ipcRenderer.on('server-log', (event, data) => {
       i18n
    };
 
-   logs.value.push(log);
+   logsCache.value.push(log);
 });
 
 ipcRenderer.on('server-finish', (event, message) => {
@@ -209,5 +206,17 @@ ipcRenderer.on('server-finish', (event, message) => {
 
 ipcRenderer.on('report-server-list', (event, reports) => {
    reportList.value = reports;
+});
+
+logsInterval.value = setInterval(() => {
+   if (logsCache.value.length) {
+      logs.value.push(...logsCache.value);
+      logsCache.value = [];
+   }
+}, 100);
+
+onBeforeUnmount(() => {
+   clearInterval(logsInterval.value);
+   logsInterval.value = null;
 });
 </script>

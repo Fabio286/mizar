@@ -183,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, Ref, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Hosts from './ClientTabHosts.vue';
@@ -226,29 +226,18 @@ const popEditMessage = ref(false);
 const idEditedMsg = ref(null);
 const localHosts = ref(hosts.value);
 const localMessages = ref(messages.value);
+const logsCache = ref([]);
+const logsInterval: Ref<NodeJS.Timer> = ref(null);
 
 const { t } = useI18n();
 
 const slicedLogs = computed(() => {
    if (logs.value.length > 500)
-      logs.value = logs.value.slice(-500);
-
+      return logs.value.slice(-500);
    return logs.value;
 });
 
 const startTest = () => {
-   if (params.value.tMin < 100 && params.value.trace === true) {
-      params.value.trace = false;
-      const time = new Date().toLocaleString();
-      const log = {
-         time: time,
-         i18n: 'tracesDisabledMessage',
-         color: 'yellow'
-      };
-
-      logs.value.push(log);
-   }
-
    running.value = 1;
    emit('clientStatus', running.value);
 
@@ -358,6 +347,7 @@ const toggleMessageCheck = (status: number) => {
    });
    updateStoreMessages(localMessages.value);
 };
+
 ipcRenderer.on('client-log', (event, data) => {
    const time = new Date().toLocaleString();
    const { message, color, params, i18n } = data;
@@ -369,7 +359,7 @@ ipcRenderer.on('client-log', (event, data) => {
       i18n
    };
 
-   logs.value.push(log);
+   logsCache.value.push(log);
 });
 
 ipcRenderer.on('test-finish', (event, message) => {
@@ -385,7 +375,33 @@ ipcRenderer.on('test-finish', (event, message) => {
    logs.value.push(log);
 });
 
+ipcRenderer.on('abort-test', (event, message) => {
+   running.value = 0;
+   emit('clientStatus', running.value);
+   const time = new Date().toLocaleString();
+   const log = {
+      time: time,
+      i18n: message,
+      color: 'red'
+   };
+
+   logsCache.value = [];
+   logs.value.push(log);
+});
+
 ipcRenderer.on('report-client-list', (event, reports) => {
    reportList.value = reports;
+});
+
+logsInterval.value = setInterval(() => {
+   if (logsCache.value.length) {
+      logs.value.push(...logsCache.value);
+      logsCache.value = [];
+   }
+}, 100);
+
+onBeforeUnmount(() => {
+   clearInterval(logsInterval.value);
+   logsInterval.value = null;
 });
 </script>

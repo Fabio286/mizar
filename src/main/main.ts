@@ -1,5 +1,4 @@
 import { app, BrowserWindow, nativeImage, ipcMain, Menu } from 'electron';
-import * as fs from 'fs';
 import * as path from 'path';
 import * as Store from 'electron-store';
 import { ChildProcess, fork, Serializable } from 'child_process';
@@ -42,14 +41,6 @@ async function createMainWindow () {
          spellcheck: false
       },
       autoHideMenuBar: true,
-      // titleBarStyle: isLinux ? 'default' :'hidden',
-      // titleBarOverlay: isWindows
-      //    ? {
-      //       color: appTheme === 'dark' ? '#383e42' : '#fff',
-      //       symbolColor: appTheme === 'dark' ? '#fff' : '#000',
-      //       height: 30
-      //    }
-      //    : false,
       trafficLightPosition: isMacOS ? { x: 10, y: 8 } : undefined,
       backgroundColor: '#1d1d1d'
    });
@@ -83,9 +74,6 @@ async function createMainWindow () {
 if (!gotTheLock) app.quit();
 else {
    require('@electron/remote/main').initialize();
-
-   // Initialize ipcHandlers
-   // ipcHandlers();
 
    ipcMain.on('refresh-theme-settings', () => {
       const appTheme = settingsStore.get('application_theme');
@@ -175,6 +163,16 @@ ipcMain.on('start-test', (event, { params, hosts, messages }) => {
                clientProcess.send(testParams);
             else {
                mainWindow.webContents.send('test-finish', message.content);
+               setTimeout(() => {
+                  clientProcess.kill();
+               }, 1000);
+            }
+            break;
+         case 'abort':
+            if (params.loop)
+               clientProcess.send(testParams);
+            else {
+               mainWindow.webContents.send('abort-test', message.content);
                clientProcess.kill();
             }
             break;
@@ -190,10 +188,15 @@ ipcMain.on('send-messages', (event) => {
    event.sender.send('client-log', { i18n: 'sendingMessages', color: '' });
 });
 
-ipcMain.on('stop-test', (event) => {
+ipcMain.on('stop-test', () => {
    try {
       clientProcess.send({ event: 'stop' });
-      event.sender.send('test-finish', 'testAborted');
+      setTimeout(() => {
+         if (clientProcess) {
+            mainWindow.webContents.send('abort-test', 'testAborted');
+            clientProcess.kill();
+         }
+      }, 500);
    }
    catch (error) {
       clientProcess.kill();
