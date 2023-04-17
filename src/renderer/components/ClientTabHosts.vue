@@ -5,14 +5,17 @@
       class="box-100"
    >
       <h3>
-         <span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus)
-         }}</i></span><span>
+         <span class="toggle-select"><i
+            class="mdi"
+            :class="[checkIcon(checkStatus)]"
+            @click="toggleCheck(checkStatus)"
+         /></span><span>
             {{ t('word.host', 2) }}</span>
       </h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
             <span>{{ t('message.addHost') }}</span>
-            <i class="material-icons">add</i>
+            <i class="mdi mdi-plus" />
          </div>
       </div>
       <ul id="hostList">
@@ -27,10 +30,10 @@
                <span>{{ host.host }}:{{ host.port }}</span>
             </label>
             <i
-               class="material-icons deleteHost"
+               class="mdi mdi-close deleteHost"
                :title="t('message.deleteHost', {host: `${host.host}:${host.port}`})"
                @click="deleteHost(index)"
-            >clear</i>
+            />
          </li>
       </ul>
    </div>
@@ -83,11 +86,11 @@ const deleteHost = (value: number) => {
 const checkIcon = (status: number) => {
    switch (status) {
       case 0:
-         return 'check_box_outline_blank';
+         return 'mdi-checkbox-blank-outline';
       case 1:
-         return 'indeterminate_check_box';
+         return 'mdi-minus-box';
       case 2:
-         return 'check_box';
+         return 'mdi-checkbox-marked';
    }
 };
 

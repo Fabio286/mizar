@@ -4,11 +4,17 @@
       ref="root"
       class="box-100"
    >
-      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>{{ t('word.port', 2) }}</span></h3>
+      <h3>
+         <span class="toggle-select"><i
+            class="mdi"
+            :class="[checkIcon(checkStatus)]"
+            @click="toggleCheck(checkStatus)"
+         /></span><span>{{ t('word.port', 2) }}</span>
+      </h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
             <span>{{ t('message.addPort') }}</span>
-            <i class="material-icons">add</i>
+            <i class="mdi mdi-plus" />
          </div>
       </div>
       <ul id="portList">
@@ -23,10 +29,10 @@
                <span>{{ port.port }}</span>
             </label>
             <i
-               class="material-icons deletePort"
+               class="mdi mdi-close deletePort"
                :title="`Elimina porta ${port.port}`"
                @click="deletePort(index)"
-            >clear</i>
+            />
          </li>
       </ul>
    </div>
@@ -79,11 +85,11 @@ const deletePort = (value: number) => {
 const checkIcon = (status: number) => {
    switch (status) {
       case 0:
-         return 'check_box_outline_blank';
+         return 'mdi-checkbox-blank-outline';
       case 1:
-         return 'indeterminate_check_box';
+         return 'mdi-minus-box';
       case 2:
-         return 'check_box';
+         return 'mdi-checkbox-marked';
    }
 };
 

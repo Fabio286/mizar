@@ -29,7 +29,7 @@
       </table>
       <div class="buttons">
          <div class="button-wrap">
-            <i class="material-icons">replay</i>
+            <i class="mdi mdi-replay" />
             <button
                class="save"
                :title="t('message.resetReceivedData')"

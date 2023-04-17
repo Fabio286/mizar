@@ -2,19 +2,6 @@
 /* stylelint-disable selector-class-pattern */
 /* stylelint-disable selector-id-pattern */
 @font-face {
-  font-family: "Material Icons";
-  font-style: normal;
-  font-weight: 400;
-  src: url("@/fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
-  src:
-    local("Material Icons"),
-    local("MaterialIcons-Regular"),
-    url("@/fonts/MaterialIcons-Regular.woff2") format("woff2"),
-    url("@/fonts/MaterialIcons-Regular.woff") format("woff"),
-    url("@/fonts/MaterialIcons-Regular.ttf") format("truetype");
-}
-
-@font-face {
   font-family: "Roboto Regular";
   font-style: normal;
   font-weight: 400;
@@ -26,32 +13,6 @@
   font-style: normal;
   font-weight: 400;
   src: url("@/fonts/RobotoMono-Regular.ttf") format("truetype");
-}
-
-.material-icons {
-  font-family: "Material Icons";
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  display: inline-flex;
-  vertical-align: middle;
-  text-decoration: inherit;
-  margin-right: 2px;
-  text-align: center;
-  line-height: 1;
-  text-transform: initial;
-
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizelegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: "liga";
 }
 
 /* Generale */
@@ -174,7 +135,7 @@ label {
   margin-bottom: 10px;
 }
 
-#header .material-icons {
+#header .mdi {
   font-size: 24px;
   margin-top: -2px;
 }
@@ -374,9 +335,9 @@ label {
   transition: opacity 0.2s;
 }
 
-#hostBox .round-button .material-icons,
-#portBox .round-button .material-icons,
-#messageBox .round-button .material-icons {
+#hostBox .round-button .mdi,
+#portBox .round-button .mdi,
+#messageBox .round-button .mdi {
   font-size: 16px;
   height: 16px;
   margin: 0;
@@ -628,7 +589,7 @@ fieldset:not(:disabled) #messageList li:hover .editMessage {
   margin: 20px 5px;
 }
 
-.button-wrap .material-icons {
+.button-wrap .mdi {
   position: absolute;
   top: 11px;
   left: 8px;
@@ -701,7 +662,7 @@ input[type="submit"] {
   width: max-content;
 }
 
-.button-wrap .material-icons.white {
+.button-wrap .mdi.white {
   color: #fff;
 }
 
@@ -768,7 +729,7 @@ fieldset:disabled .checkbox {
   position: relative;
 }
 
-.toggle-select .material-icons {
+.toggle-select .mdi {
   font-size: 18px;
   color: #1565c0;
   z-index: 1;
@@ -796,7 +757,7 @@ fieldset:disabled .checkbox {
   min-width: 14px;
   background: #ebebeb;
   margin-right: 5px;
-  border: 2px solid #1565c0;
+  border: 2px solid #1565c0cc;
   border-radius: 2px;
   justify-content: center;
   align-items: center;
@@ -808,50 +769,16 @@ fieldset:disabled .checkbox {
 }
 
 .checkbox input:checked + .checkbox-block {
-  background: #1565c0;
+  background: transparent;
 }
 
 .checkbox input:checked + .checkbox-block::before {
-  content: "done";
-  display: block;
-  font-family: "Material Icons";
-  color: #fcfcfc;
-  font-size: 14px;
-
-  /* Support for all WebKit browsers. */
+  content: "\F0132";
+  display: inline-block;
+  color: #1565c0;
+  font: normal normal normal 18px/1 "Material Design Icons";
+  text-rendering: auto;
+  line-height: inherit;
   -webkit-font-smoothing: antialiased;
-
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizelegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: "liga";
-}
-
-/* TABLET PORTRAIT */
-
-@media only screen and (min-width: 768px) {
-  /* 768px-HEADER */
-
-  /* 768px-MAIN */
-
-  /* 768px-FOOTER */
-}
-
-/* TABLET LANDSCAPE & NETBOOK */
-@media only screen and (min-width: 1024px) {
-  /* 1024px-HEADER */
-
-  /* 1024px-MAIN */
-
-  /* SIDEBAR */
-
-  /* 1024px-FOOTER */
-}
-
-/* DESKTOP */
-@media only screen and (min-width: 1200px) {
+  border: 2px solid transparent;
 }

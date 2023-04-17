@@ -14,7 +14,7 @@
             <tr v-for="(report, index) in reports" :key="index">
                <td>{{ report.host }}</td>
                <td>{{ report.sockets }}</td>
-               <td><span :title="t('word.sent', 2)">{{ report.messages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span :title="t('word.received', 2)">{{ report.received }}</span></td>
+               <td><span :title="t('word.sent', 2)">{{ report.messages.toLocaleString() }}</span><i class="mdi mdi-swap-vertical" /><span :title="t('word.received', 2)">{{ report.received }}</span></td>
                <td><span :title="t('word.sent', 2)">{{ report.data.toLocaleString() }} B</span></td>
             </tr>
          </tbody>
@@ -22,7 +22,7 @@
             <tr>
                <td>{{ t('word.total', 2) }}</td>
                <td>{{ totSockets }}</td>
-               <td><span :title="t('word.sent', 2)">{{ totMessages.toLocaleString() }}</span> <i class="material-icons">import_export</i><span :title="t('word.received', 2)">{{ totReceived.toLocaleString() }}</span></td>
+               <td><span :title="t('word.sent', 2)">{{ totMessages.toLocaleString() }}</span><i class="mdi mdi-swap-vertical" /><span :title="t('word.received', 2)">{{ totReceived.toLocaleString() }}</span></td>
                <td><span :title="t('word.sent', 2)">{{ totData.toLocaleString() }} B</span></td>
             </tr>
          </tfoot>

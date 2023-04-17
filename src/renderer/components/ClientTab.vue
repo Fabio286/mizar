@@ -144,13 +144,13 @@
             </fieldset>
             <div class="buttons">
                <div v-if="running === 0" class="button-wrap">
-                  <i class="material-icons white">play_arrow</i>
+                  <i class="mdi mdi-play white" />
                   <button class="confirm" type="submit">
                      {{ t('word.start') }}
                   </button>
                </div>
                <div v-if="running !== 0 && params.stepTest" class="button-wrap">
-                  <i class="material-icons white">message</i>
+                  <i class="mdi mdi-message white" />
                   <button
                      class="confirm"
                      :title="t('message.sendMessages')"
@@ -160,7 +160,7 @@
                   </button>
                </div>
                <div v-if="running !== 0" class="button-wrap">
-                  <i class="material-icons white">stop</i>
+                  <i class="mdi mdi-stop white" />
                   <button class="stop" @click.prevent="stopTest">
                      {{ t('word.stop') }}
                   </button>
@@ -187,7 +187,7 @@ import { ref, computed, Ref, onBeforeUnmount } from 'vue';
 import { storeToRefs } from 'pinia';
 import Console from './BaseConsole.vue';
 import Hosts from './ClientTabHosts.vue';
-import Messages from './ClientMessages.vue';
+import Messages from './ClientTabMessages.vue';
 import NewHost from './ModalNewHost.vue';
 import NewMessage from './ModalNewMessage.vue';
 import EditMessage from './ModalEditMessage.vue';

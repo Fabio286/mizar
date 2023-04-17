@@ -52,13 +52,13 @@
             </fieldset>
             <div class="buttons">
                <div v-if="running === 0" class="button-wrap">
-                  <i class="material-icons white">play_arrow</i>
+                  <i class="mdi mdi-play white" />
                   <button class="confirm" type="submit">
                      {{ t('word.start') }}
                   </button>
                </div>
                <div v-if="running === 1" class="button-wrap">
-                  <i class="material-icons white">stop</i>
+                  <i class="mdi mdi-stop white" />
                   <button class="stop" @click="stopServer">
                      {{ t('word.stop') }}
                   </button>

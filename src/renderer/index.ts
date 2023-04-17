@@ -2,6 +2,7 @@
 import { ipcRenderer } from 'electron';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import '@mdi/font/css/materialdesignicons.css';
 import '@/css/reset.css';
 import '@/scss/main.scss';
 

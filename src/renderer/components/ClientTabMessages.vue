@@ -4,11 +4,17 @@
       ref="root"
       class="box-100"
    >
-      <h3><span class="toggle-select"><i class="material-icons" @click="toggleCheck(checkStatus)">{{ checkIcon(checkStatus) }}</i></span><span>{{ t('word.message', 2) }}</span></h3>
+      <h3>
+         <span class="toggle-select"><i
+            class="mdi"
+            :class="[checkIcon(checkStatus)]"
+            @click="toggleCheck(checkStatus)"
+         /></span><span>{{ t('word.message', 2) }}</span>
+      </h3>
       <div class="tools-box">
          <div class="round-button green-bg" @click="showAdd">
             <span>{{ t('message.addMessage') }}</span>
-            <i class="material-icons">add</i>
+            <i class="mdi mdi-plus" />
          </div>
       </div>
       <ul id="messageList">
@@ -24,15 +30,15 @@
                <span>{{ truncate(message.name, 25, '...') }}</span>
             </label>
             <i
-               class="material-icons editMessage"
+               class="mdi mdi-pencil editMessage"
                :title="t('message.editMessage', { message: message.name })"
                @click="showEdit(index)"
-            >edit</i>
+            />
             <i
-               class="material-icons deleteMessage"
+               class="mdi mdi-close deleteMessage"
                :title="t('message.deleteMessage', { message: message.name })"
                @click="deleteMessage(index)"
-            >clear</i>
+            />
          </li>
       </ul>
    </div>
@@ -99,11 +105,11 @@ const deleteMessage = (index: number) => {
 const checkIcon = (status: number) => {
    switch (status) {
       case 0:
-         return 'check_box_outline_blank';
+         return 'mdi-checkbox-blank-outline';
       case 1:
-         return 'indeterminate_check_box';
+         return 'mdi-minus-box';
       case 2:
-         return 'check_box';
+         return 'mdi-checkbox-marked';
    }
 };
 

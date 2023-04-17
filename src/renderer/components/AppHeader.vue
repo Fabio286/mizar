@@ -10,9 +10,9 @@
             <transition name="fade">
                <i
                   v-if="clientStatus === 1"
-                  class="material-icons running"
+                  class="mdi mdi-play running"
                   :title="t('message.running')"
-               >play_arrow</i>
+               />
             </transition>
          </div>
          <div
@@ -24,9 +24,9 @@
             <transition name="fade">
                <i
                   v-if="serverStatus === 1"
-                  class="material-icons running"
+                  class="mdi mdi-play running"
                   :title="t('message.running')"
-               >play_arrow</i>
+               />
             </transition>
          </div>
       </nav>
@@ -35,7 +35,7 @@
          :title="t('word.settings')"
          @click="isSettingModal=true"
       >
-         <i class="material-icons">settings</i>
+         <i class="mdi mdi-cog" />
       </div>
       <ModalSettings v-if="isSettingModal" @hide-settings="isSettingModal=false" />
    </header>
