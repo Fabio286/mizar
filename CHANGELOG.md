@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Fabio286/mizar/compare/v1.0.1...v1.1.0) (2023-04-18)
+
+
+### Features
+
+* icons for message formats ([ec320c7](https://github.com/Fabio286/mizar/commit/ec320c79c0caacad7b35bbfcf3d5f53a028ac347))
+
 ### [1.0.1](https://github.com/Fabio286/mizar/compare/v1.0.0...v1.0.1) (2023-04-16)
 
 ## 1.0.0 (2023-04-16)
