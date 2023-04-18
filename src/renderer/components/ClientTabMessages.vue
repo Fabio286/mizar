@@ -26,7 +26,11 @@
                   @change="updateMessages"
                >
                <div class="checkbox-block" />
-               <span class="format">({{ message.format }})</span>
+               <span
+                  class="mdi"
+                  :class="[message.format === 'hex' ? 'mdi-hexadecimal' : 'mdi-format-text']"
+                  :title="message.format"
+               />
                <span>{{ truncate(message.name, 25, '...') }}</span>
             </label>
             <i
