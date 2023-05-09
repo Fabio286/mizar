@@ -90,9 +90,9 @@
       "displayName": "Mizar TCP Tester",
       "backgroundColor": "transparent",
       "showNameOnTiles": true,
-      "identityName": "62514FabioDiStasio.MizarTCPTester",
+      "identityName": "62514FabioDiStasio.MizarTCPtester",
       "publisher": "CN=1A2729ED-865C-41D2-9038-39AE2A63AA52",
-      "applicationId": "FabioDiStasio.MizarTCPTester"
+      "applicationId": "FabioDiStasio.MizarTCPtester"
     }
   },
   "dependencies": {

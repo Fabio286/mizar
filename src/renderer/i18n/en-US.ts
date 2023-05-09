@@ -45,7 +45,7 @@ export const enUS = {
       editMessage: 'Edit message "{message}"',
       deleteMessage: 'Delete message "{message}"',
       hostAddress: 'Host address',
-      addPort: 'Add port {port}',
+      addPort: 'Add port',
       echoServer: 'Echo server',
       resetReceivedData: 'Reset received data',
       serverStatus: 'Server status',
