@@ -30,12 +30,21 @@
             </transition>
          </div>
       </nav>
-      <div
-         class="navSettings"
-         :title="t('word.settings')"
-         @click="isSettingModal=true"
-      >
-         <i class="mdi mdi-cog" />
+      <div class="settings-block">
+         <div
+            class="navSettings"
+            :title="t('word.source')"
+            @click="openOutside('https://github.com/Fabio286/mizar')"
+         >
+            <i class="mdi mdi-github" />
+         </div>
+         <div
+            class="navSettings"
+            :title="t('word.settings')"
+            @click="isSettingModal=true"
+         >
+            <i class="mdi mdi-cog" />
+         </div>
       </div>
       <ModalSettings v-if="isSettingModal" @hide-settings="isSettingModal=false" />
    </header>
@@ -45,6 +54,7 @@
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ModalSettings from './ModalSettings.vue';
+import { shell } from 'electron';
 
 defineProps({
    selTab: Number,
@@ -61,4 +71,14 @@ const { t } = useI18n();
 const selectTab = (value: number) => {
    emit('selectTab', value);
 };
+
+const openOutside = (link: string) => {
+   shell.openExternal(link);
+};
 </script>
+<style scoped lang="scss">
+.settings-block {
+  display: flex;
+  gap: 10px;
+}
+</style>

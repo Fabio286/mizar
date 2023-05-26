@@ -23,7 +23,8 @@ export const itIT = {
       settings: 'Impostazioni',
       close: 'Chiudi',
       locale: 'Lingua',
-      author: 'Autore'
+      author: 'Autore',
+      source: 'Sorgenti'
    },
    message: {
       running: 'In esecuzione',

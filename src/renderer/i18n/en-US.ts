@@ -23,7 +23,8 @@ export const enUS = {
       settings: 'Settings',
       close: 'Close',
       locale: 'Locale',
-      author: 'Author'
+      author: 'Author',
+      source: 'Source'
    },
    message: {
       running: 'Running',
