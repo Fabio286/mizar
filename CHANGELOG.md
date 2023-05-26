@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Fabio286/mizar/compare/v1.1.0...v1.2.0) (2023-05-26)
+
+
+### Features
+
+* italian translation ([54818a1](https://github.com/Fabio286/mizar/commit/54818a1995d5151401671e2ba8db57c8eee22782))
+
 ## [1.1.0](https://github.com/Fabio286/mizar/compare/v1.0.1...v1.1.0) (2023-04-18)
 
 
