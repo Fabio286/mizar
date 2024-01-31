@@ -6,7 +6,7 @@ import { ptBR } from './pt-BR';
 const messages = {
    'en-US': enUS,
    'it-IT': itIT,
-   'pt-BR': ptBR,
+   'pt-BR': ptBR
 };
 
 type NestedPartial<T> = {
