@@ -1,10 +1,12 @@
 import { createI18n } from 'vue-i18n';
 import { enUS } from './en-US';
 import { itIT } from './it-IT';
+import { ptBR } from './pt-BR';
 
 const messages = {
    'en-US': enUS,
-   'it-IT': itIT
+   'it-IT': itIT,
+   'pt-BR': ptBR
 };
 
 type NestedPartial<T> = {
