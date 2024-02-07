@@ -43,7 +43,7 @@ export const itIT = {
       addHost: 'Aggiungi host',
       deleteHost: 'Cancella host "{host}"',
       addMessage: 'Aggiungi messaggio',
-      editMessage: 'Modifica messaggio "{message}"',
+      editMessage: 'Modifica messaggio',
       deleteMessage: 'Cancella messaggio "{message}"',
       hostAddress: 'Host address',
       addPort: 'Aggiungi porta',

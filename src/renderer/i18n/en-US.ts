@@ -43,7 +43,7 @@ export const enUS = {
       addHost: 'Add host',
       deleteHost: 'Delete host "{host}"',
       addMessage: 'Add message',
-      editMessage: 'Edit message "{message}"',
+      editMessage: 'Edit message',
       deleteMessage: 'Delete message "{message}"',
       hostAddress: 'Host address',
       addPort: 'Add port',
